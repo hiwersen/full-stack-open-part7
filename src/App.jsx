@@ -8,12 +8,12 @@ import AuthForm from "./components/AuthForm";
 import ToggleVisibility from "./components/ToggleVisibility";
 import BlogForm from "./components/BlogForm";
 import ToggleComponents from "./components/ToggleComponents";
+import { useNotificationDispatch } from "./hooks";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [message, setMessage] = useState(null);
   const [user, setUser] = useState(null);
-
+  const notificationDispatch = useNotificationDispatch();
   const toggleBlogFormRef = useRef();
 
   useEffect(() => {
@@ -31,12 +31,12 @@ const App = () => {
     }
   }, []);
 
-  const showMessage = (message) => {
-    setMessage(message);
+  const showNotification = notification => {
+    notificationDispatch({ type: 'SHOW', payload: notification });
     setTimeout(() => {
-      setMessage(null);
-    }, 5000);
-  };
+      notificationDispatch({ type: 'CLEAR' });
+      }, 5000);
+  }
 
   const signup = async (userToSignup) => {
     try {
@@ -50,7 +50,7 @@ const App = () => {
       }
     } catch (error) {
       const message = error.response.data.error || error.message;
-      showMessage({ message, error: true });
+      showNotification({ message, error: true });
     }
   };
 
@@ -62,7 +62,7 @@ const App = () => {
       setUser(user);
     } catch (error) {
       const message = error.response.data.error || error.message;
-      showMessage({ message, error: true });
+      showNotification({ message, error: true });
     }
   };
 
@@ -79,10 +79,10 @@ const App = () => {
       toggleBlogFormRef.current.toggleVisibility();
 
       const message = `a new blog "${blog.title}" by ${blog.author} added`;
-      showMessage({ message: message, error: false });
+      showNotification({ message: message, error: false });
     } catch (error) {
       const message = error.response?.data?.error || "error creating new blog";
-      showMessage({ message, error: true });
+      showNotification({ message, error: true });
       console.error(error.message);
     }
   };
@@ -97,10 +97,10 @@ const App = () => {
       );
 
       const message = `"${blog.title}" has been updated`;
-      showMessage({ message: message, error: false });
+      showNotification({ message: message, error: false });
     } catch (error) {
       const message = error.response?.data?.error || "error updating blog";
-      showMessage({ message, error: true });
+      showNotification({ message, error: true });
       console.error(error.message);
     }
   };
@@ -114,18 +114,18 @@ const App = () => {
 
       if (response.status !== 204) {
         const message = `failed to delete blog: "${blog.title}"`;
-        showMessage({ message, error: true });
+        showNotification({ message, error: true });
         return;
       }
 
       setBlogs(blogs.filter((b) => b.id !== blog.id));
 
       const message = `blog "${blog.title}" has been deleted`;
-      showMessage({ message: message, error: false });
+      showNotification({ message: message, error: false });
     } catch (error) {
       const message =
         error.response?.data?.error || `error deleting blog: "${blog.title}"`;
-      showMessage({ message, error: true });
+      showNotification({ message, error: true });
       console.error(error.message);
     }
   };
@@ -148,7 +148,7 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={message} />
+      <Notification />
       {!user ? (
         <section style={authStyle}>
           <ToggleComponents showByDefault="Sign Up" hideByDefault="Log In">

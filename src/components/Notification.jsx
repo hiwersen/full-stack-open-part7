@@ -1,7 +1,13 @@
-const Notification = ({ message }) => {
-  if (!message) return null;
+import { useNotificationValue } from "../hooks";
 
-  const color = message.error ? "red" : "green";
+const Notification = () => {
+  const notification = useNotificationValue()
+
+  console.log(notification)
+
+  if (!notification) return null;
+
+  const color = notification.error ? "red" : "green";
 
   const style = {
     position: "fixed",
@@ -23,7 +29,7 @@ const Notification = ({ message }) => {
 
   return (
     <div style={style}>
-      <p>{message.message}</p>
+      <p>{notification.message}</p>
     </div>
   );
 };

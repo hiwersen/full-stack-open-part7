@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import { NotificationContextProvider } from "./NotificationContext";
 
 const style = {
   backgroundColor: "#f9f9f9",
@@ -18,7 +19,9 @@ const root = createRoot(document.getElementById("root"));
 root.render(
   <StrictMode>
     <div style={style}>
-      <App />
+      <NotificationContextProvider>
+        <App />
+      </NotificationContextProvider>
     </div>
   </StrictMode>,
 );
