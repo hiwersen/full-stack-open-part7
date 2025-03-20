@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import Blog from "./components/Blog";
+import { useEffect, useRef } from "react";
+import Bloglist from "./components/Bloglist";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import userService from "./services/user";
@@ -9,32 +9,18 @@ import ToggleVisibility from "./components/ToggleVisibility";
 import BlogForm from "./components/BlogForm";
 import ToggleComponents from "./components/ToggleComponents";
 import {
-  useNotificationDispatch,
-  useNotificationValue,
   useUserDispatch,
   useUserValue
 } from "./hooks";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useShowNotification } from './hooks/index'
 
 const App = () => {
   const user = useUserValue();
-  const userDispatch = useUserDispatch()
-  const notificationValue = useNotificationValue();
-  const notificationDispatch = useNotificationDispatch();
-
-  const toggleBlogFormRef = useRef();
-
-  const result = useQuery({
-    queryKey: ['blogs'],
-    queryFn: blogService.getAll,
-    select: blogs => [...blogs].sort((a, b) => b.likes - a.likes),
-    refetchOnWindowFocus: false,
-    retry: 1,
-  })
-
-  const blogs = result.data;
-
+  const userDispatch = useUserDispatch();
+  const showNotification = useShowNotification();
   const queryClient = useQueryClient();
+  const toggleBlogFormRef = useRef();
 
   const createBlogMutation = useMutation({
     mutationFn: blogService.create,
@@ -51,34 +37,6 @@ const App = () => {
     }
   })
 
-  const updateBlogMutation = useMutation({
-    mutationFn: blogService.update,
-    onSuccess: blog => {
-      const blogs = queryClient.getQueryData(['blogs']);
-      queryClient.setQueryData(['blogs'], blogs.map(b => b.id === blog.id ? blog : b));
-      const message = `"${blog.title}" has been updated`;
-      showNotification({ message: message, error: false });
-    },
-    onError: error => {
-      const message = error.response?.data?.error || "error updating blog";
-      showNotification({ message, error: true });
-      console.error(error.message);
-    }
-  })
-
-  const deleteBlogMutation = useMutation({
-    mutationFn: blogService.delete,
-    onSuccess: (_, blog) => {
-      queryClient.setQueryData(['blogs'], blogs.filter(b => b.id !== blog.id));
-      const message = `blog "${blog.title}" has been deleted`;
-      showNotification({ message: message, error: false });
-    },
-    onError: (error, blog) => {
-      const message = error.response?.data?.error || `error deleting blog: "${blog.title}"`;
-      showNotification({ message, error: true });
-    }
-  });
-
   useEffect(() => {
     let user = window.localStorage.getItem("user");
     if (user) {
@@ -87,16 +45,6 @@ const App = () => {
       blogService.setToken(user.token);
     }
   }, [userDispatch]);
-
-  const showNotification = notification => {
-    notificationValue && clearTimeout(notificationValue?.timeoutID)
-
-    notification.timeoutID = setTimeout(() => {
-      notificationDispatch({ type: 'CLEAR' });
-      }, 5000);
-
-    notificationDispatch({ type: 'SHOW', payload: notification });
-  }
 
   const signup = async (userToSignup) => {
     try {
@@ -136,17 +84,6 @@ const App = () => {
     createBlogMutation.mutate(blogToCreate)
   };
 
-  const updateBlog = (blogToUpdate) => {
-    updateBlogMutation.mutate(blogToUpdate)
-  };
-
-  const deleteBlog = (blogToDelete) => {
-    const ok = window.confirm(`Delete blog "${blogToDelete.title}" by ${blogToDelete.author}?`);
-    if (!ok) return;
-
-    deleteBlogMutation.mutate(blogToDelete)
-  };
-
   const flex = {
     position: "relative",
     display: "flex",
@@ -162,10 +99,6 @@ const App = () => {
     transform: "translate(-50%, -75%)",
     transformOrigin: "top",
   };
-
-  if ( result.isLoading ) {
-    return <div>loading data...</div>
-  }
 
   return (
     <div>
@@ -208,17 +141,7 @@ const App = () => {
           >
           <BlogForm createBlog={createBlog} />
           </ToggleVisibility>
-          <div style={{ width: "100%" }}>
-            {blogs.map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                updateBlog={updateBlog}
-                deleteBlog={deleteBlog}
-                user={user}
-              />
-            ))}
-          </div>
+          <Bloglist />
         </section>
       )}
     </div>

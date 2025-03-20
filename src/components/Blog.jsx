@@ -1,8 +1,11 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { useBlogQuery, useUserValue } from "../hooks";
 
-const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
+const Blog = ({ blog }) => {
   const [viewDetails, setViewDetails] = useState(false);
+  const { updateBlog, deleteBlog } = useBlogQuery();
+  const user = useUserValue();
 
   const style = {
     // backgroundColor: '#ffffff8b',
@@ -83,10 +86,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
 };
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  updateBlog: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
+  blog: PropTypes.object.isRequired
 };
 
 export default Blog;
