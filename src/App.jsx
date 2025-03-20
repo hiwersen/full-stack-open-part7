@@ -9,18 +9,39 @@ import ToggleVisibility from "./components/ToggleVisibility";
 import BlogForm from "./components/BlogForm";
 import ToggleComponents from "./components/ToggleComponents";
 import { useNotificationDispatch } from "./hooks";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const notificationDispatch = useNotificationDispatch();
   const toggleBlogFormRef = useRef();
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      setBlogs(blogs.sort((a, b) => b.likes - a.likes));
-    });
-  }, []);
+  const result = useQuery({
+    queryKey: ['blogs'],
+    queryFn: blogService.getAll,
+    select: blogs => [...blogs].sort((a, b) => b.likes - a.likes),
+    refetchOnWindowFocus: false,
+    retry: 1,
+  })
+
+  const blogs = result.data;
+
+  const queryClient = useQueryClient();
+
+  const createBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: blog => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(['blogs'], blogs.concat(blog))
+      const message = `a new blog "${blog.title}" by ${blog.author} added`;
+      showNotification({ message: message, error: false });
+      toggleBlogFormRef.current.toggleVisibility();
+    },
+    onError: error => {
+      const message = error.response?.data?.error || "error creating new blog";
+      showNotification({ message, error: true });
+    }
+  })
 
   useEffect(() => {
     let user = window.localStorage.getItem("user");
@@ -73,20 +94,10 @@ const App = () => {
   };
 
   const createBlog = async (blogToCreate) => {
-    try {
-      const blog = await blogService.create(blogToCreate);
-      setBlogs(blogs.concat(blog).sort((a, b) => b.likes - a.likes));
-      toggleBlogFormRef.current.toggleVisibility();
-
-      const message = `a new blog "${blog.title}" by ${blog.author} added`;
-      showNotification({ message: message, error: false });
-    } catch (error) {
-      const message = error.response?.data?.error || "error creating new blog";
-      showNotification({ message, error: true });
-      console.error(error.message);
-    }
+    createBlogMutation.mutate(blogToCreate)
   };
 
+  /*
   const updateBlog = async (blogToUpdate, id) => {
     try {
       const blog = await blogService.update(blogToUpdate, id);
@@ -104,7 +115,9 @@ const App = () => {
       console.error(error.message);
     }
   };
+  */
 
+  /*
   const deleteBlog = async (blog) => {
     const ok = window.confirm(`Delete blog "${blog.title}" by ${blog.author}?`);
     if (!ok) return;
@@ -129,6 +142,7 @@ const App = () => {
       console.error(error.message);
     }
   };
+ */
 
   const flex = {
     position: "relative",
@@ -145,6 +159,10 @@ const App = () => {
     transform: "translate(-50%, -75%)",
     transformOrigin: "top",
   };
+
+  if ( result.isLoading ) {
+    return <div>loading data...</div>
+  }
 
   return (
     <div>
@@ -185,15 +203,15 @@ const App = () => {
             hideLabel="Cancel"
             ref={toggleBlogFormRef}
           >
-            <BlogForm createBlog={createBlog} />
+          <BlogForm createBlog={createBlog} />
           </ToggleVisibility>
           <div style={{ width: "100%" }}>
             {blogs.map((blog) => (
               <Blog
                 key={blog.id}
                 blog={blog}
-                updateBlog={updateBlog}
-                deleteBlog={deleteBlog}
+                // updateBlog={updateBlog}
+                // deleteBlog={deleteBlog}
                 user={user}
               />
             ))}
