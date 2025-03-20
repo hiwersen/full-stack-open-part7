@@ -18,15 +18,15 @@ const create = async (blog) => {
   return data;
 };
 
-const update = async (blog, id) => {
+const update = async (blog) => {
   const config = { headers: { Authorization: token } };
-  const { data } = await axios.put(`${baseUrl}/${id}`, blog, config);
+  const { data } = await axios.put(`${baseUrl}/${blog.id}`, blog, config);
   return data;
 };
 
-const remove = async (id) => {
+const remove = async (blog) => {
   const config = { headers: { Authorization: token } };
-  const response = await axios.delete(`${baseUrl}/${id}`, config);
+  const response = await axios.delete(`${baseUrl}/${blog.id}`, config);
   return response;
 };
 

@@ -1,8 +1,6 @@
 import { useReducer, createContext } from "react";
 
 const reducer = (state, action) => {
-    console.log('STATE -------------------:', state)
-    console.log('ACTION  -----------------:', action)
 
     switch (action.type) {
         case 'SHOW':

@@ -8,11 +8,12 @@ import AuthForm from "./components/AuthForm";
 import ToggleVisibility from "./components/ToggleVisibility";
 import BlogForm from "./components/BlogForm";
 import ToggleComponents from "./components/ToggleComponents";
-import { useNotificationDispatch } from "./hooks";
+import { useNotificationDispatch, useNotificationValue } from "./hooks";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const App = () => {
   const [user, setUser] = useState(null);
+  const notificationValue = useNotificationValue();
   const notificationDispatch = useNotificationDispatch();
   const toggleBlogFormRef = useRef();
 
@@ -43,6 +44,34 @@ const App = () => {
     }
   })
 
+  const updateBlogMutation = useMutation({
+    mutationFn: blogService.update,
+    onSuccess: blog => {
+      const blogs = queryClient.getQueryData(['blogs']);
+      queryClient.setQueryData(['blogs'], blogs.map(b => b.id === blog.id ? blog : b));
+      const message = `"${blog.title}" has been updated`;
+      showNotification({ message: message, error: false });
+    },
+    onError: error => {
+      const message = error.response?.data?.error || "error updating blog";
+      showNotification({ message, error: true });
+      console.error(error.message);
+    }
+  })
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: blogService.delete,
+    onSuccess: (_, blog) => {
+      queryClient.setQueryData(['blogs'], blogs.filter(b => b.id !== blog.id));
+      const message = `blog "${blog.title}" has been deleted`;
+      showNotification({ message: message, error: false });
+    },
+    onError: (error, blog) => {
+      const message = error.response?.data?.error || `error deleting blog: "${blog.title}"`;
+      showNotification({ message, error: true });
+    }
+  });
+
   useEffect(() => {
     let user = window.localStorage.getItem("user");
     if (user) {
@@ -53,10 +82,13 @@ const App = () => {
   }, []);
 
   const showNotification = notification => {
-    notificationDispatch({ type: 'SHOW', payload: notification });
-    setTimeout(() => {
+    notificationValue && clearTimeout(notificationValue?.timeoutID)
+
+    notification.timeoutID = setTimeout(() => {
       notificationDispatch({ type: 'CLEAR' });
       }, 5000);
+
+    notificationDispatch({ type: 'SHOW', payload: notification });
   }
 
   const signup = async (userToSignup) => {
@@ -93,56 +125,20 @@ const App = () => {
     setUser(null);
   };
 
-  const createBlog = async (blogToCreate) => {
+  const createBlog = (blogToCreate) => {
     createBlogMutation.mutate(blogToCreate)
   };
 
-  /*
-  const updateBlog = async (blogToUpdate, id) => {
-    try {
-      const blog = await blogService.update(blogToUpdate, id);
-      setBlogs(
-        blogs
-          .map((b) => (b.id === blog.id ? blog : b))
-          .sort((a, b) => b.likes - a.likes),
-      );
-
-      const message = `"${blog.title}" has been updated`;
-      showNotification({ message: message, error: false });
-    } catch (error) {
-      const message = error.response?.data?.error || "error updating blog";
-      showNotification({ message, error: true });
-      console.error(error.message);
-    }
+  const updateBlog = (blogToUpdate) => {
+    updateBlogMutation.mutate(blogToUpdate)
   };
-  */
 
-  /*
-  const deleteBlog = async (blog) => {
-    const ok = window.confirm(`Delete blog "${blog.title}" by ${blog.author}?`);
+  const deleteBlog = (blogToDelete) => {
+    const ok = window.confirm(`Delete blog "${blogToDelete.title}" by ${blogToDelete.author}?`);
     if (!ok) return;
 
-    try {
-      const response = await blogService.delete(blog.id);
-
-      if (response.status !== 204) {
-        const message = `failed to delete blog: "${blog.title}"`;
-        showNotification({ message, error: true });
-        return;
-      }
-
-      setBlogs(blogs.filter((b) => b.id !== blog.id));
-
-      const message = `blog "${blog.title}" has been deleted`;
-      showNotification({ message: message, error: false });
-    } catch (error) {
-      const message =
-        error.response?.data?.error || `error deleting blog: "${blog.title}"`;
-      showNotification({ message, error: true });
-      console.error(error.message);
-    }
+    deleteBlogMutation.mutate(blogToDelete)
   };
- */
 
   const flex = {
     position: "relative",
@@ -210,8 +206,8 @@ const App = () => {
               <Blog
                 key={blog.id}
                 blog={blog}
-                // updateBlog={updateBlog}
-                // deleteBlog={deleteBlog}
+                updateBlog={updateBlog}
+                deleteBlog={deleteBlog}
                 user={user}
               />
             ))}

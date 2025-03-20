@@ -27,14 +27,14 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   );
 
   const likeBtn = () => {
-    const likes = Number(blog.likes || 0);
-    const id = blog.id;
+    const likes = Number(blog.likes || 0) + 1;
+    const blogToDelete = { ...blog, likes }
 
     return (
       <input
         type="button"
         value="Like"
-        onClick={() => updateBlog({ likes: likes + 1 }, id)}
+        onClick={() => updateBlog(blogToDelete)}
       />
     );
   };

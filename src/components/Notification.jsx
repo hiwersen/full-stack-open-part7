@@ -3,8 +3,6 @@ import { useNotificationValue } from "../hooks";
 const Notification = () => {
   const notification = useNotificationValue()
 
-  console.log(notification)
-
   if (!notification) return null;
 
   const color = notification.error ? "red" : "green";
