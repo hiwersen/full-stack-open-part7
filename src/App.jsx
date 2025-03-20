@@ -8,13 +8,20 @@ import AuthForm from "./components/AuthForm";
 import ToggleVisibility from "./components/ToggleVisibility";
 import BlogForm from "./components/BlogForm";
 import ToggleComponents from "./components/ToggleComponents";
-import { useNotificationDispatch, useNotificationValue } from "./hooks";
+import {
+  useNotificationDispatch,
+  useNotificationValue,
+  useUserDispatch,
+  useUserValue
+} from "./hooks";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const App = () => {
-  const [user, setUser] = useState(null);
+  const user = useUserValue();
+  const userDispatch = useUserDispatch()
   const notificationValue = useNotificationValue();
   const notificationDispatch = useNotificationDispatch();
+
   const toggleBlogFormRef = useRef();
 
   const result = useQuery({
@@ -76,10 +83,10 @@ const App = () => {
     let user = window.localStorage.getItem("user");
     if (user) {
       user = JSON.parse(user);
-      setUser(user);
+      userDispatch({ type: 'SET', payload: user });
       blogService.setToken(user.token);
     }
-  }, []);
+  }, [userDispatch]);
 
   const showNotification = notification => {
     notificationValue && clearTimeout(notificationValue?.timeoutID)
@@ -112,7 +119,7 @@ const App = () => {
       const user = await loginService.login(userToLogin);
       window.localStorage.setItem("user", JSON.stringify(user));
       blogService.setToken(user.token);
-      setUser(user);
+      userDispatch({ type: 'SET', payload: user });
     } catch (error) {
       const message = error.response.data.error || error.message;
       showNotification({ message, error: true });
@@ -122,7 +129,7 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem("user");
     blogService.setToken(null);
-    setUser(null);
+    userDispatch({ type: 'CLEAR' });
   };
 
   const createBlog = (blogToCreate) => {
