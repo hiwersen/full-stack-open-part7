@@ -1,8 +1,10 @@
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import NotificationContext from "../NotificationContext";
 import UserContext from "../UserContext";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import blogService from '../services/blogs'
+import loginService from '../services/login'
+import usersService from '../services/users'
 
 export const useUserValue = () => {
     return useContext(UserContext)[0]
@@ -90,4 +92,76 @@ export const useBlogQuery = () => {
         updateBlog,
         deleteBlog,
     }
+}
+
+export const useAuth = () => {
+    const showNotification = useShowNotification();
+    const userDispatch = useUserDispatch();
+
+    const signup = async (userToSignup) => {
+        try {
+          const user = await usersService.post(userToSignup);
+
+          if (user) {
+            login({
+              username: userToSignup.username,
+              password: userToSignup.password,
+            });
+          }
+        } catch (error) {
+          const message = error.response.data.error || error.message;
+          showNotification({ message, error: true });
+        }
+      };
+
+      const login = async (userToLogin) => {
+        try {
+          const user = await loginService.login(userToLogin);
+          window.localStorage.setItem("user", JSON.stringify(user));
+          blogService.setToken(user.token);
+          userDispatch({ type: 'SET', payload: user });
+        } catch (error) {
+          const message = error.response.data.error || error.message;
+          showNotification({ message, error: true });
+        }
+      };
+
+      const logout = () => {
+        window.localStorage.removeItem("user");
+        blogService.setToken(null);
+        userDispatch({ type: 'CLEAR' });
+      };
+
+      return {
+        signup,
+        login,
+        logout,
+      }
+}
+
+export const useCreateBlog = () => {
+  const showNotification = useShowNotification();
+  const queryClient = useQueryClient();
+  const toggleBlogFormRef = useRef();
+
+  const createBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: blog => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(['blogs'], blogs.concat(blog))
+      const message = `a new blog "${blog.title}" by ${blog.author} added`;
+      showNotification({ message: message, error: false });
+      toggleBlogFormRef.current.toggleVisibility();
+    },
+    onError: error => {
+      const message = error.response?.data?.error || "error creating new blog";
+      showNotification({ message, error: true });
+    }
+  });
+
+  const createBlog = (blogToCreate) => {
+    createBlogMutation.mutate(blogToCreate)
+  };
+
+  return { createBlog, toggleBlogFormRef }
 }

@@ -56,3 +56,9 @@ input {
   padding: 5px 6px;
   border-width: 0.5px;
 }
+
+.flex-center {
+  display: flex;
+  flex-direction: "column";
+  justify-content: center;
+}
