@@ -5,13 +5,18 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import blogService from '../services/blogs'
 import loginService from '../services/login'
 import usersService from '../services/users'
+import { useNavigate } from "react-router-dom";
 
 export const useUserValue = () => {
-    return useContext(UserContext)[0]
+    return useContext(UserContext).user[0]
 }
 
 export const useUserDispatch = () => {
-    return useContext(UserContext)[1]
+    return useContext(UserContext).user[1]
+}
+
+export const useUserLoading = () => {
+  return useContext(UserContext).loading
 }
 
 export const useNotificationValue = () => {
@@ -38,7 +43,7 @@ export const useUsersQuery = () => {
   const usersQuery = useQuery({
     queryKey: ['users'],
     queryFn: usersService.getAll,
-    retry: 1,
+    retry: false,
   })
 
   return {
@@ -55,7 +60,7 @@ export const useBlogQuery = () => {
         queryKey: ['blogs'],
         queryFn: blogService.getAll,
         select: blogs => [...blogs].sort((a, b) => b.likes - a.likes),
-        retry: 1,
+        retry: false,
       })
 
     const queryClient = useQueryClient();
@@ -110,6 +115,7 @@ export const useBlogQuery = () => {
 export const useAuth = () => {
     const showNotification = useShowNotification();
     const userDispatch = useUserDispatch();
+    const navigate = useNavigate();
 
     const signup = async (userToSignup) => {
         try {
@@ -133,6 +139,7 @@ export const useAuth = () => {
           window.localStorage.setItem("user", JSON.stringify(user));
           blogService.setToken(user.token);
           userDispatch({ type: 'SET', payload: user });
+          navigate('/')
         } catch (error) {
           const message = error.response.data.error || error.message;
           showNotification({ message, error: true });

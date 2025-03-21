@@ -1,9 +1,8 @@
 import React from 'react'
-import { useUserValue, useUsersQuery } from '../hooks/index'
+import { useUsersQuery } from '../hooks/index'
 import { Link } from "react-router-dom"
 
 const Users = () => {
-  const user = useUserValue();
   const { users } = useUsersQuery();
 
   const style = {
@@ -11,7 +10,7 @@ const Users = () => {
     justifyContent: 'space-between',
   }
 
-  return user && (
+  return (
     <section>
       <h2>Users</h2>
       <div style={style}>

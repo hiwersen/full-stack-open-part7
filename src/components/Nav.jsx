@@ -1,11 +1,8 @@
 import React from 'react'
 import Logout from "./Logout"
 import { Link } from "react-router-dom"
-import { useUserValue } from '../hooks'
 
 const Nav = () => {
-    const user = useUserValue();
-
     const padding = {
         padding: 6
       }
@@ -16,7 +13,7 @@ const Nav = () => {
         marginTop: 36,
       }
 
-  return user && (
+  return (
     <div style={navStyle}>
         <div>
             <Link style={padding} to="/">Home</Link>
