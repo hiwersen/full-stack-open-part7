@@ -69,7 +69,7 @@ export const useBlogQuery = () => {
         mutationFn: blogService.update,
         onSuccess: updatedBlog => {
           queryClient.setQueryData(['blogs'], blogs => blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b));
-          const message = `"${updateBlog.title}" has been updated`;
+          const message = `"${updatedBlog.title}" has been updated`;
           showNotification({ message: message, error: false });
         },
         onError: error => {

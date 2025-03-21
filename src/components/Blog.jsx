@@ -3,7 +3,6 @@ import { useBlogQuery, useUserValue } from "../hooks";
 import { useMatch } from "react-router-dom";
 
 const Blog = () => {
-  const [viewDetails, setViewDetails] = useState(false);
   const { updateBlog, deleteBlog } = useBlogQuery();
   const user = useUserValue();
 
