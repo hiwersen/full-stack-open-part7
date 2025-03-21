@@ -4,11 +4,9 @@ import Auth from "./components/Auth";
 import Nav from "./components/Nav"
 import Home from "./components/Home";
 import Users from "./components/Users"
+import User from "./components/User"
 import Footer from "./components/Footer";
-import {
-  BrowserRouter as Router,
-  Routes, Route
- } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 
 const App = () => {
   return (
@@ -16,13 +14,12 @@ const App = () => {
       <h2>Blogs</h2>
       <Notification />
       <Auth />
-      <Router>
         <Nav />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/Users" element={<Users />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<User />} />
         </Routes>
-      </Router>
       <Footer />
     </div>
   );

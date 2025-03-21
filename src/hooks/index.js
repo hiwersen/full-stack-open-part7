@@ -34,6 +34,20 @@ export const useShowNotification = () => {
     }
 }
 
+export const useUsersQuery = () => {
+  const usersQuery = useQuery({
+    queryKey: ['users'],
+    queryFn: usersService.getAll,
+    retry: 1,
+  })
+
+  return {
+    users: usersQuery.data || [],
+    isLoading: usersQuery.isLoading,
+    isError: usersQuery.isError,
+  }
+}
+
 export const useBlogQuery = () => {
     const showNotification = useShowNotification();
 
@@ -41,7 +55,6 @@ export const useBlogQuery = () => {
         queryKey: ['blogs'],
         queryFn: blogService.getAll,
         select: blogs => [...blogs].sort((a, b) => b.likes - a.likes),
-        refetchOnWindowFocus: false,
         retry: 1,
       })
 

@@ -20,7 +20,7 @@ const Nav = () => {
     <div style={navStyle}>
         <div>
             <Link style={padding} to="/">Home</Link>
-            <Link style={padding} to="/Users">Users</Link>
+            <Link style={padding} to="/users">Users</Link>
         </div>
         <Logout />
     </div>
