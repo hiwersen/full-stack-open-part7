@@ -1,18 +1,23 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
 import { useBlogQuery, useUserValue } from "../hooks";
+import { useMatch } from "react-router-dom";
 
-const Blog = ({ blog }) => {
+const Blog = () => {
   const [viewDetails, setViewDetails] = useState(false);
   const { updateBlog, deleteBlog } = useBlogQuery();
   const user = useUserValue();
+
+  const match = useMatch('/blogs/:id');
+  const { blogs } = useBlogQuery();
+  const blog = blogs.find(({ id }) => match.params.id === id) || null
 
   const style = {
     // backgroundColor: '#ffffff8b',
     padding: "24px 14px 12px",
     border: "solid 0.5px lightgray",
-    borderRadius: 4,
+    marginTop: 48,
     marginBottom: 12,
+    borderRadius: 4,
     boxShadow: "0 8px 12px #d1d1d1",
   };
 
@@ -20,14 +25,6 @@ const Blog = ({ blog }) => {
     display: "flex",
     justifyContent: "space-between",
   };
-
-  const toggleViewBtn = () => (
-    <input
-      type="button"
-      value={viewDetails ? "Hide" : "View"}
-      onClick={() => setViewDetails(!viewDetails)}
-    />
-  );
 
   const likeBtn = () => {
     const likes = Number(blog.likes || 0) + 1;
@@ -57,36 +54,30 @@ const Blog = ({ blog }) => {
     );
   };
 
-  return (
+  return blog && (
     <div data-testid="blog" className="blog" style={style}>
-      <div className="content-main" style={{ ...flex, fontSize: 18 }}>
-        <span>
-          {blog.title}, {blog.author}
-        </span>
-        {toggleViewBtn()}
-      </div>
-      <div
-        className="content-details"
-        style={{ display: viewDetails ? "" : "none", fontSize: 14 }}
-      >
+      <h2 className="content-main" style={flex}>
+        <span>{blog.title}</span>
+        <span style={{ color: "#606060", fontStyle: 'italic' }}>{blog.author}</span>
+      </h2>
+      <div>
         <div>
           <a href="#" target="_blank">
             {blog.url}
           </a>
         </div>
         <div data-testid="likes" style={flex}>
-          Likes <span data-testid="likes-count">{blog.likes}</span>&nbsp;
+           <span style={{ marginTop: 12 }}>
+              <span>Likes</span>
+              <span style={{  marginLeft: 12 }} data-testid="likes-count">{blog.likes}</span>
+           </span>
           {likeBtn()}
         </div>
-        <div>{blog.user?.name}</div>
+        <div>Added by: {blog.user?.name}</div>
         <div style={{ textAlign: "right" }}>{deleteBtn()}</div>
       </div>
     </div>
   );
-};
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired
 };
 
 export default Blog;

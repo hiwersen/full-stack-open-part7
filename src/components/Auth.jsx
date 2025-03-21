@@ -2,9 +2,10 @@ import React from 'react'
 import ToggleComponents from './ToggleComponents';
 import AuthForm from './AuthForm';
 import { useAuth, useUserValue } from '../hooks';
+import { Navigate } from 'react-router-dom';
 
 const Auth = () => {
-    const { login, signup } = useAuth();
+    const { signup, login } = useAuth();
     const user = useUserValue();
 
     const style = {
@@ -16,7 +17,9 @@ const Auth = () => {
         transformOrigin: "top",
       };
 
-    return user ? null : (
+    if (user) return <Navigate to="/" replace />
+
+    return (
         <section style={style}>
             <ToggleComponents showByDefault="Sign Up" hideByDefault="Log In">
                 <AuthForm key="login" type="Log In" auth={login} />

@@ -5,6 +5,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./components/Home";
 import Users from "./components/Users"
 import User from "./components/User"
+import Blog from "./components/Blog"
 import Footer from "./components/Footer";
 import { Routes, Route  } from "react-router-dom"
 
@@ -22,6 +23,7 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/users" element={<Users />} />
             <Route path="/users/:id" element={<User />} />
+            <Route path="/blogs/:id" element={<Blog />} />
           </Route>
         </Routes>
       <Footer />
