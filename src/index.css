@@ -24,11 +24,13 @@ button {
   border-width: 0.5px;
 }
 
-input[type="button"] {
+input[type="button"],
+input[type="submit"] {
   cursor: pointer;
 }
 
-input[type="button"]:hover {
+input[type="button"]:hover,
+input[type="submit"]:hover {
   background-color: rgb(176, 191, 204);
 }
 
@@ -55,6 +57,10 @@ input {
   margin-bottom: 0.5em;
   padding: 5px 6px;
   border-width: 0.5px;
+}
+
+a:hover {
+  color:rgb(14, 126, 218);
 }
 
 .flex-center {

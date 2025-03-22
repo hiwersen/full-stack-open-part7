@@ -12,7 +12,7 @@ import { Routes, Route  } from "react-router-dom"
 const App = () => {
   return (
     <div>
-      <h2>Blogs</h2>
+      <h1>Blogs</h1>
       <Notification />
         <Routes>
           {/* Unprotected Routes */}

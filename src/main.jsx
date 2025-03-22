@@ -15,7 +15,7 @@ const style = {
   maxWidth: 720,
   width: "100%",
   minHeight: "100vh",
-  padding: "48px 8px 24px",
+  padding: "48px 12px 24px",
 };
 
 const queryClient = new QueryClient();

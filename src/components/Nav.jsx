@@ -13,6 +13,7 @@ const Nav = () => {
         marginTop: 36,
         padding: '16px 6px 8px',
         boxShadow: "0 8px 12px #d1d1d1",
+        fontWeight: "bold",
       }
 
   return (

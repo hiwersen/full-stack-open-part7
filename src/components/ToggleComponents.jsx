@@ -7,11 +7,13 @@ const ToggleComponents = ({ showByDefault, hideByDefault, children }) => {
   const divStyle = {
     textAlign: "center",
     marginTop: 36,
+    fontWeight: "bold",
+    fontStyle: "italic",
   };
 
   const aStyle = {
     cursor: "pointer",
-    fontSize: 14,
+    fontSize: 16,
     borderBottom: "0.5px solid #aaa",
   };
 

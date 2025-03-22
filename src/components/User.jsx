@@ -7,15 +7,26 @@ const User = () => {
     const { users } = useUsersQuery();
     const user = users.find(({ id }) => match.params.id === id) || null
 
+    const usersStyle = {
+        padding: 8,
+        listStyle: "none",
+        borderTop: "solid 1px #d1d1d1",
+    }
+
+    const flex = {
+        display: "flex",
+        justifyContent: "space-between",
+    };
+
     return user && (
-        <section>
+        <section style={{ margin: "44px 24px" }}>
             <h2>{ user.name || user.username }</h2>
-            <ul style={{ listStyleType: 'none' }}>
+            <ul>
                 {
                     user.blogs.map(blog => (
-                        <li key={blog.id}>
+                        <li style={{ ...usersStyle, ...flex }} key={blog.id}>
                             <span>{ blog.title }</span>
-                            <span style={{ padding: 12 }}>{ blog.author }</span>
+                            <span style={{ fontStyle: "italic", color: "#606060" }}>by: { blog.author }</span>
                         </li>
                     ))
                  }

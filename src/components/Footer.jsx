@@ -10,7 +10,7 @@ const Footer = () => {
     marginTop: 48,
   }
   return (
-    <footer style={style} >Full Stack Open | part7</footer>
+    <footer style={style} >Full Stack Open | part 7</footer>
   )
 }
 

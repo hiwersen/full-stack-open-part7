@@ -30,7 +30,14 @@ const Blog = () => {
   const flex = {
     display: "flex",
     justifyContent: "space-between",
+    gap: 16,
   };
+
+  const commentsStyle = {
+    padding: 8,
+    listStyle: "none",
+    borderTop: "solid 1px #d1d1d1",
+  }
 
   const likeBtn = () => {
     const likes = Number(blog.likes || 0) + 1;
@@ -85,23 +92,21 @@ const Blog = () => {
       </div>
 
       <div>
-        <h3>Comments</h3>
+        <h3>Comments:</h3>
         <div>
           <form style={flex} onSubmit={handleAddComment}>
-            <label htmlFor="comment">
-              Comment:
               <input
+                style={{ flex: 1 }}
                 id="comment"
                 name="comment"
                 value={comment}
                 onChange={({ target: { value } }) => setComment(value)}
               />
-            </label>
             <input type="submit" value="Comment" />
           </form>
         </div>
         <ul>
-          { blog.comments.map((c, i) => <li key={i}>{c}</li>) }
+          { blog.comments.map((c, i) => <li style={commentsStyle} key={i}>{c}</li>) }
         </ul>
       </div>
     </div>

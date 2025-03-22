@@ -6,6 +6,7 @@ const Notification = () => {
   if (!notification) return null;
 
   const color = notification.error ? "red" : "green";
+  const shadow = notification.error ? "#e1afab" : "#abc4a2";
 
   const style = {
     position: "fixed",
@@ -19,9 +20,13 @@ const Notification = () => {
     opacity: 0.9,
     borderRadius: 2,
     border: `solid 2px ${color}`,
-    padding: "1em",
+    padding: "0.25em 0.5em",
     color,
+    fontSize: "1.5em",
+    fontStyle: "italic",
+    fontWeight: "bold",
     textAlign: "center",
+    boxShadow: `0 8px 12px ${shadow}`,
     zIndex: 99,
   };
 
