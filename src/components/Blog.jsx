@@ -3,12 +3,19 @@ import { useBlogQuery, useUserValue } from "../hooks";
 import { useMatch } from "react-router-dom";
 
 const Blog = () => {
-  const { updateBlog, deleteBlog } = useBlogQuery();
+  const [comment, setComment] = useState("")
+  const { updateBlog, commentBlog, deleteBlog } = useBlogQuery();
   const user = useUserValue();
 
   const match = useMatch('/blogs/:id');
   const { blogs } = useBlogQuery();
   const blog = blogs.find(({ id }) => match.params.id === id) || null
+
+  const handleAddComment = event => {
+    event.preventDefault();
+    commentBlog({ comment, id: blog.id })
+    setComment("")
+  }
 
   const style = {
     // backgroundColor: '#ffffff8b',
@@ -60,7 +67,7 @@ const Blog = () => {
         <span style={{ color: "#606060", fontStyle: 'italic' }}>{blog.author}</span>
       </h2>
 
-      <div>
+      <div style={{ marginBottom: 48 }}>
         <div>
           <a href="#" target="_blank">
             {blog.url}
@@ -79,6 +86,20 @@ const Blog = () => {
 
       <div>
         <h3>Comments</h3>
+        <div>
+          <form style={flex} onSubmit={handleAddComment}>
+            <label htmlFor="comment">
+              Comment:
+              <input
+                id="comment"
+                name="comment"
+                value={comment}
+                onChange={({ target: { value } }) => setComment(value)}
+              />
+            </label>
+            <input type="submit" value="Comment" />
+          </form>
+        </div>
         <ul>
           { blog.comments.map((c, i) => <li key={i}>{c}</li>) }
         </ul>

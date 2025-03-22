@@ -79,6 +79,20 @@ export const useBlogQuery = () => {
         }
     })
 
+    const commentBlogMutation = useMutation({
+      mutationFn: blogService.comment,
+      onSuccess: (commentedBlog, comment) => {
+        queryClient.setQueryData(['blogs'], blogs => blogs.map(b => b.id === commentedBlog.id ? commentedBlog : b));
+        const message = `comment: "${comment.comment}" added to "${commentedBlog.title}"`;
+        showNotification({ message: message, error: false });
+      },
+      onError: error => {
+        const message = error.response?.data?.error || "error commenting blog";
+        showNotification({ message, error: true });
+        console.error(error.message);
+      }
+  })
+
     const deleteBlogMutation = useMutation({
     mutationFn: blogService.delete,
     onSuccess: (_, deletedBlog) => {
@@ -93,7 +107,11 @@ export const useBlogQuery = () => {
     });
 
     const updateBlog = (blogToUpdate) => {
-    updateBlogMutation.mutate(blogToUpdate)
+      updateBlogMutation.mutate(blogToUpdate)
+    };
+
+    const commentBlog = (commentToAdd) => {
+      commentBlogMutation.mutate(commentToAdd)
     };
 
     const deleteBlog = (blogToDelete) => {
@@ -108,6 +126,7 @@ export const useBlogQuery = () => {
         isLoading: blogsQuery.isLoading,
         isError: blogsQuery.isError,
         updateBlog,
+        commentBlog,
         deleteBlog,
     }
 }
