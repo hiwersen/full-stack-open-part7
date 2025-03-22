@@ -59,6 +59,7 @@ const Blog = () => {
         <span>{blog.title}</span>
         <span style={{ color: "#606060", fontStyle: 'italic' }}>{blog.author}</span>
       </h2>
+
       <div>
         <div>
           <a href="#" target="_blank">
@@ -72,8 +73,15 @@ const Blog = () => {
            </span>
           {likeBtn()}
         </div>
-        <div>Added by: {blog.user?.name}</div>
+        <div>Added by: {blog.user?.name || "Anonymous"}</div>
         <div style={{ textAlign: "right" }}>{deleteBtn()}</div>
+      </div>
+
+      <div>
+        <h3>Comments</h3>
+        <ul>
+          { blog.comments.map((c, i) => <li key={i}>{c}</li>) }
+        </ul>
       </div>
     </div>
   );

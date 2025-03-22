@@ -9,7 +9,7 @@ const Notification = () => {
 
   const style = {
     position: "fixed",
-    top: "10%",
+    top: 0,
     left: "50%",
     transform: "translate(-50%, -0%)",
     minWidth: 360,
