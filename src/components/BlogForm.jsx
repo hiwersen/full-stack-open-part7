@@ -7,9 +7,7 @@ const BlogForm = ({ createBlog }) => {
   const author = useField("author");
   const url = useField("url");
 
-  const handleCreateBlog = (event) => {
-    event.preventDefault();
-
+  const handleCreateBlog = () => {
     createBlog({
       title: title.value,
       author: author.value,
@@ -31,11 +29,11 @@ const BlogForm = ({ createBlog }) => {
   return (
     <div>
       <h2 style={style}>Create New Blog</h2>
-      <form onSubmit={handleCreateBlog}>
+      <form>
         <Field attributes={ title } />
         <Field attributes={ author } />
         <Field attributes={ url } />
-        <button type="submit">Create</button>
+        <button type="button" onClick={handleCreateBlog}>Create</button>
       </form>
     </div>
   );

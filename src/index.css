@@ -59,6 +59,10 @@ input {
   border-width: 0.5px;
 }
 
+input:not([type=button]):not([type=submit]) {
+  font-size: 1rem;
+}
+
 a:hover {
   color:rgb(14, 126, 218);
 }

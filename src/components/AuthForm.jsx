@@ -7,9 +7,7 @@ const AuthForm = ({ type, auth }) => {
   const username = useField('username');
   const password = useField('password', 'password');
 
-  const handleAuth = async (event) => {
-    event.preventDefault();
-
+  const handleAuth = () => {
     auth({
       username : username.value,
       password : password.value,
@@ -20,11 +18,11 @@ const AuthForm = ({ type, auth }) => {
   return (
     <>
       <h1>{type === "Sign Up" ? "Signup" : "Login"}</h1>
-      <form onSubmit={handleAuth}>
+      <form>
         {type === "Sign Up" && <Field attributes={ name } />}
         <Field attributes={ username } />
         <Field attributes={ password } />
-        <button type="submit">{type}</button>
+        <button type="button" onClick={handleAuth}>{type}</button>
       </form>
     </>
   );

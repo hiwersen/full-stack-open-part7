@@ -1,5 +1,6 @@
 import { useBlogQuery, useUserValue } from "../hooks";
 import Comments from "./Comments"
+import { Navigate } from "react-router-dom";
 
 const Blog = () => {
   const { blog, updateBlog, deleteBlog } = useBlogQuery();
@@ -49,7 +50,9 @@ const Blog = () => {
     );
   };
 
-  return blog && (
+  if (!blog) return <Navigate to="/" replace />
+
+  return (
     <div data-testid="blog" className="blog" style={style}>
       <h2 className="content-main" style={flex}>
         <span>{blog.title}</span>
