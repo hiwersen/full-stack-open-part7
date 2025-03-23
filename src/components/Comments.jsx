@@ -21,10 +21,10 @@ const Comments = () => {
         gap: 16,
     };
 
-    const commentsStyle = {
-        padding: 8,
+    const listStyle = {
+        padding: "16px 8px 4px",
         listStyle: "none",
-        borderTop: "solid 1px #d1d1d1",
+        borderBottom: "solid 1px #d1d1d1",
     }
 
     return (
@@ -37,7 +37,7 @@ const Comments = () => {
             </form>
             </div>
             <ul>
-            { blog.comments.map((c, i) => <li style={commentsStyle} key={i}>{c}</li>) }
+            { blog.comments.map((c, i) => <li style={listStyle} key={i}>{c}</li>) }
             </ul>
         </div>
   )
