@@ -1,65 +1,29 @@
-import { useState } from "react";
+import Field from "./Field"
+import { useField } from "../hooks/index";
 import PropTypes from "prop-types";
 
 const AuthForm = ({ type, auth }) => {
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const name = useField('name');
+  const username = useField('username');
+  const password = useField('password', 'password');
 
   const handleAuth = async (event) => {
     event.preventDefault();
 
-    auth({ username, password, name });
-  };
-
-  const nameForm = () => {
-    return (
-      <div>
-        <label htmlFor="name">
-          Name:
-          <input
-            id="name"
-            name="name"
-            type="text"
-            value={name}
-            onChange={({ target: { value } }) => setName(value)}
-          />
-        </label>
-      </div>
-    );
+    auth({
+      username : username.value,
+      password : password.value,
+      name : name.value
+    });
   };
 
   return (
     <>
       <h1>{type === "Sign Up" ? "Signup" : "Login"}</h1>
       <form onSubmit={handleAuth}>
-        {type === "Sign Up" && nameForm()}
-        <div>
-          <label htmlFor="username">
-            Username:
-            <input
-              id="username"
-              data-testid="username"
-              name="username"
-              type="text"
-              value={username}
-              onChange={({ target: { value } }) => setUsername(value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="password">
-            Password:
-            <input
-              id="password"
-              data-testid="password"
-              name="password"
-              type="password"
-              value={password}
-              onChange={({ target: { value } }) => setPassword(value)}
-            />
-          </label>
-        </div>
+        {type === "Sign Up" && <Field attributes={ name } />}
+        <Field attributes={ username } />
+        <Field attributes={ password } />
         <button type="submit">{type}</button>
       </form>
     </>

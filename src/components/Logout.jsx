@@ -6,7 +6,7 @@ const Logout = () => {
     const user = useUserValue();
 
     const divStyle = {
-        fontSize: 14,
+        fontWeight: "bold",
         width: "100%",
         textAlign: "right",
         paddingRight: 8,
@@ -21,7 +21,7 @@ const Logout = () => {
 
     return user && (
         <div style={divStyle} >
-            {user.name} logged-in
+            Hello, {user.name}!
             <input
                 style={inputStyle}
                 type="button"

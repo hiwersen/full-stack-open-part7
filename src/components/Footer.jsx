@@ -2,7 +2,6 @@ import React from 'react'
 
 const Footer = () => {
   const style = {
-    color: '#2f2f2f',
     fontStyle: 'italic',
     fontSize: 14,
     display: 'flex',

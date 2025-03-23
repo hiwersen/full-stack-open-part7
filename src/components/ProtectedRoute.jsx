@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useUserLoading, useUserValue } from '../hooks';
 import Nav from "./Nav"
+import Footer from "./Footer"
 
 const ProtectedRoute = () => {
     const user = useUserValue();
@@ -15,6 +16,7 @@ const ProtectedRoute = () => {
         <>
             <Nav />
             <Outlet />
+            <Footer />
         </>
     )
 }

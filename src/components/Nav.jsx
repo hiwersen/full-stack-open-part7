@@ -17,13 +17,13 @@ const Nav = () => {
       }
 
   return (
-    <div style={navStyle}>
+    <nav style={navStyle}>
         <div>
             <Link style={padding} to="/">Home</Link>
             <Link style={padding} to="/users">Users</Link>
         </div>
         <Logout />
-    </div>
+    </nav>
   )
 }
 

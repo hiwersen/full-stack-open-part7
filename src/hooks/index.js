@@ -1,11 +1,11 @@
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import NotificationContext from "../NotificationContext";
 import UserContext from "../UserContext";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import blogService from '../services/blogs'
 import loginService from '../services/login'
 import usersService from '../services/users'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useMatch } from "react-router-dom";
 
 export const useUserValue = () => {
     return useContext(UserContext).user[0]
@@ -121,8 +121,13 @@ export const useBlogQuery = () => {
     deleteBlogMutation.mutate(blogToDelete)
     };
 
+    const match = useMatch('/blogs/:id');
+    const blogs = blogsQuery.data || []
+    const blog = match && (blogs.find(({ id }) => match.params.id === id) || null)
+
     return {
-        blogs: blogsQuery.data || [],
+        blog,
+        blogs,
         isLoading: blogsQuery.isLoading,
         isError: blogsQuery.isError,
         updateBlog,
@@ -203,4 +208,30 @@ export const useCreateBlog = () => {
   };
 
   return { createBlog, toggleBlogFormRef }
+}
+
+export const useField = (name, type = "text") => {
+  const [value, setValue] = useState('');
+
+  class Attributes {
+    constructor() {
+      this.name = name;
+      this.type = type;
+      this.value = value;
+      this.id = name;
+      this["data-testid"] = name;
+      this.onChange = ({ target: { value } }) => setValue(value)
+    }
+
+    set(value) {
+      setValue(value)
+    }
+
+    reset() {
+      setValue('')
+    }
+  }
+
+  return new Attributes()
+
 }

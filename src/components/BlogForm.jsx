@@ -1,22 +1,24 @@
-import { useState } from "react";
+import Field from "./Field"
+import { useField } from "../hooks/index";
 import PropTypes from "prop-types";
 
 const BlogForm = ({ createBlog }) => {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
+  const title = useField("title");
+  const author = useField("author");
+  const url = useField("url");
 
   const handleCreateBlog = (event) => {
     event.preventDefault();
 
-    createBlog({ title, author, url });
-    reset();
-  };
+    createBlog({
+      title: title.value,
+      author: author.value,
+      url: url.value,
+    });
 
-  const reset = () => {
-    setTitle("");
-    setAuthor("");
-    setUrl("");
+    title.reset();
+    author.reset();
+    url.reset();
   };
 
   const style = {
@@ -30,45 +32,9 @@ const BlogForm = ({ createBlog }) => {
     <div>
       <h2 style={style}>Create New Blog</h2>
       <form onSubmit={handleCreateBlog}>
-        <div>
-          <label htmlFor="title">
-            Title:
-            <input
-              id="title"
-              data-testid="title"
-              name="title"
-              type="text"
-              value={title}
-              onChange={({ target: { value } }) => setTitle(value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="author">
-            Author:
-            <input
-              id="author"
-              data-testid="author"
-              name="author"
-              type="text"
-              value={author}
-              onChange={({ target: { value } }) => setAuthor(value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="url">
-            Url:
-            <input
-              id="url"
-              data-testid="url"
-              name="url"
-              type="text"
-              value={url}
-              onChange={({ target: { value } }) => setUrl(value)}
-            />
-          </label>
-        </div>
+        <Field attributes={ title } />
+        <Field attributes={ author } />
+        <Field attributes={ url } />
         <button type="submit">Create</button>
       </form>
     </div>

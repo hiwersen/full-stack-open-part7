@@ -6,7 +6,6 @@ import Home from "./components/Home";
 import Users from "./components/Users"
 import User from "./components/User"
 import Blog from "./components/Blog"
-import Footer from "./components/Footer";
 import { Routes, Route  } from "react-router-dom"
 
 const App = () => {
@@ -26,7 +25,6 @@ const App = () => {
             <Route path="/blogs/:id" element={<Blog />} />
           </Route>
         </Routes>
-      <Footer />
     </div>
   );
 };

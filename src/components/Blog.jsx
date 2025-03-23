@@ -1,21 +1,9 @@
-import { useState } from "react";
 import { useBlogQuery, useUserValue } from "../hooks";
-import { useMatch } from "react-router-dom";
+import Comments from "./Comments"
 
 const Blog = () => {
-  const [comment, setComment] = useState("")
-  const { updateBlog, commentBlog, deleteBlog } = useBlogQuery();
+  const { blog, updateBlog, deleteBlog } = useBlogQuery();
   const user = useUserValue();
-
-  const match = useMatch('/blogs/:id');
-  const { blogs } = useBlogQuery();
-  const blog = blogs.find(({ id }) => match.params.id === id) || null
-
-  const handleAddComment = event => {
-    event.preventDefault();
-    commentBlog({ comment, id: blog.id })
-    setComment("")
-  }
 
   const style = {
     // backgroundColor: '#ffffff8b',
@@ -32,12 +20,6 @@ const Blog = () => {
     justifyContent: "space-between",
     gap: 16,
   };
-
-  const commentsStyle = {
-    padding: 8,
-    listStyle: "none",
-    borderTop: "solid 1px #d1d1d1",
-  }
 
   const likeBtn = () => {
     const likes = Number(blog.likes || 0) + 1;
@@ -91,24 +73,7 @@ const Blog = () => {
         <div style={{ textAlign: "right" }}>{deleteBtn()}</div>
       </div>
 
-      <div>
-        <h3>Comments:</h3>
-        <div>
-          <form style={flex} onSubmit={handleAddComment}>
-              <input
-                style={{ flex: 1 }}
-                id="comment"
-                name="comment"
-                value={comment}
-                onChange={({ target: { value } }) => setComment(value)}
-              />
-            <input type="submit" value="Comment" />
-          </form>
-        </div>
-        <ul>
-          { blog.comments.map((c, i) => <li style={commentsStyle} key={i}>{c}</li>) }
-        </ul>
-      </div>
+      <Comments />
     </div>
   );
 };
