@@ -11,17 +11,21 @@ const Nav = () => {
         display: 'flex',
         justifyContent: 'space-between',
         marginTop: 36,
-        padding: '16px 6px 8px',
+        padding: 16,
         boxShadow: "0 8px 12px #d1d1d1",
         fontWeight: "bold",
       }
 
   return (
     <nav style={navStyle}>
-        <div>
+        <ul>
+          <li>
             <Link style={padding} to="/">Home</Link>
+          </li>
+          <li>
             <Link style={padding} to="/users">Users</Link>
-        </div>
+          </li>
+        </ul>
         <Logout />
     </nav>
   )

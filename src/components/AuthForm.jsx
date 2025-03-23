@@ -17,7 +17,7 @@ const AuthForm = ({ type, auth }) => {
 
   return (
     <>
-      <h1>{type === "Sign Up" ? "Signup" : "Login"}</h1>
+      <h2>{type === "Sign Up" ? "Signup" : "Login"}</h2>
       <form>
         {type === "Sign Up" && <Field attributes={ name } />}
         <Field attributes={ username } />

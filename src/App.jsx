@@ -10,7 +10,7 @@ import { Routes, Route  } from "react-router-dom"
 
 const App = () => {
   return (
-    <div>
+    <>
       <h1>Blogs</h1>
       <Notification />
         <Routes>
@@ -25,7 +25,7 @@ const App = () => {
             <Route path="/blogs/:id" element={<Blog />} />
           </Route>
         </Routes>
-    </div>
+    </>
   );
 };
 

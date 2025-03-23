@@ -5,9 +5,7 @@ const Comments = () => {
     const { blog, commentBlog } = useBlogQuery();
     const comment = useField('comment');
 
-    const handleAddComment = event => {
-        event.preventDefault();
-
+    const handleAddComment = () => {
         commentBlog({
             comment: comment.value,
             id: blog.id,
@@ -30,12 +28,10 @@ const Comments = () => {
     return (
         <div>
             <h3>Comments</h3>
-            <div>
-            <form style={flex} onSubmit={handleAddComment}>
+            <form style={flex}>
                 <input { ...comment } style={{ flex: 1 }} />
-                <input type="submit" value="Comment" />
+                <input type="button" value="Comment" onClick={handleAddComment} />
             </form>
-            </div>
             <ul>
             { blog.comments.map((c, i) => <li style={listStyle} key={i}>{c}</li>) }
             </ul>
