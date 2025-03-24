@@ -9,7 +9,7 @@
   --bg-color2: #dadada;
   --bg-color3: #0e7eda;
   --bg-color4: #b0b0b0;
-  --bg-color5: rgba(255, 255, 255, 0.85);
+  --bg-color5: rgba(255, 255, 255, 0.5);
 
   --text-color1: #464646;
   --text-color2: #b0b0b0;
@@ -183,7 +183,7 @@ footer {
 }
 
 .createBtn:hover {
-  color: var(--text-color4);
+  color: var(--text-color4) !important;
   border-color: var(--text-color4);
   background-color: var(--bg-color3);
   cursor: pointer;

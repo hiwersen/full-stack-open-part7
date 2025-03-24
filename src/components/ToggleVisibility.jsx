@@ -18,16 +18,19 @@ const ToggleVisibility = forwardRef(
     const style = {
       ...styleInitial,
       ...shadow,
-      cursor: 'pointer',
     }
 
     return (
       <div>
         <div style={{ display: visibility ? "none" : "" }}>
           <h2>
-            <span className="btnInvert createBtn" style={style} onClick={toggleVisibility}>
-              C
-            </span>
+            <input
+              style={style}
+              type="button"
+              value="C"
+              className="btnInvert createBtn"
+               onClick={toggleVisibility}
+            />
             <span>reate New Blog</span>
           </h2>
         </div>

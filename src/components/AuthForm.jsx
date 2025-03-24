@@ -19,9 +19,10 @@ const AuthForm = ({ type, auth }) => {
 
   const style = {
     fontSize: '0.625em',
-    color: color.c3,
+    color: color.c2,
     marginTop: size.sz8,
     marginBottom: size.sz8,
+    textAlign: 'center',
   }
 
   return (

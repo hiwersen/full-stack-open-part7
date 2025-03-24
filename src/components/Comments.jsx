@@ -25,12 +25,16 @@ const Comments = () => {
         margin: 0,
     }
 
+    const btn = {
+        padding: `${size.sz3} 0`,
+    }
+
     return (
         <div>
             <h3>Comments</h3>
             <form style={form}>
                 <input { ...comment } style={input} />
-                <input type="button" value="Comment" onClick={handleAddComment} />
+                <input style={btn} type="button" value="Comment" onClick={handleAddComment} />
             </form>
             <ul>
             { blog.comments.map((c, i) => <li style={listStyle} key={i}>{c}</li>) }
