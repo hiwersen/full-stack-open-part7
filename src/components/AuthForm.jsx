@@ -1,6 +1,8 @@
 import Field from "./Field"
 import { useField } from "../hooks/index";
 import PropTypes from "prop-types";
+import Subheading from "./Subheading";
+import { color, size } from "../styles";
 
 const AuthForm = ({ type, auth }) => {
   const name = useField('name');
@@ -15,9 +17,18 @@ const AuthForm = ({ type, auth }) => {
     });
   };
 
+  const style = {
+    fontSize: '0.625em',
+    color: color.c3,
+    marginTop: size.sz8,
+    marginBottom: size.sz8,
+  }
+
   return (
     <>
-      <h2>{type === "Sign Up" ? "Signup" : "Login"}</h2>
+      <div style={style}>
+        <Subheading text="Blog your blogs" />
+      </div>
       <form>
         {type === "Sign Up" && <Field attributes={ name } />}
         <Field attributes={ username } />

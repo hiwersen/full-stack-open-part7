@@ -1,29 +1,34 @@
 import React from 'react';
 import { useAuth, useUserValue } from '../hooks';
+import { flex, color, size } from '../styles';
 
 const Logout = () => {
     const { logout } = useAuth();
     const user = useUserValue();
+    const name = (user?.name || user?.username || 'Anonymous').split(' ')[0];
 
     const divStyle = {
+        ...flex,
         fontWeight: "bold",
-        width: "100%",
-        textAlign: "right",
-        paddingRight: 8,
+        gap: size.sz3,
     };
 
-    const inputStyle = {
-        fontSize: 14,
-        marginLeft: 14,
-        width: 82,
-        padding: "2px 4px",
+    const nameStyle = {
+        color: color.c2,
+    }
+
+    const btn = {
+        color: 'initial',
+        borderColor: 'initial',
     }
 
     return user && (
-        <div style={divStyle} >
-            Hello, {user.name}!
+        <div style={divStyle}>
+            <span>
+            Hi, <span style={nameStyle}>{name}</span>!
+            </span>
             <input
-                style={inputStyle}
+                style={btn}
                 type="button"
                 value="Log out"
                 onClick={logout}

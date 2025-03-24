@@ -1,34 +1,44 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { borderB, flex, size, color } from "../styles";
 
 const ToggleComponents = ({ showByDefault, hideByDefault, children }) => {
   const [toggle, setToggle] = useState(false);
 
-  const divStyle = {
-    textAlign: "center",
-    marginTop: 36,
-    fontWeight: "bold",
-    fontStyle: "italic",
+  const divider = {
+    ...flex,
+    alignItems: 'center',
+    minHeight: size.sz8,
+    marginBottom: size.sz2,
+    fontWeight: 'bold',
   };
 
-  const aStyle = {
-    cursor: "pointer",
-    fontSize: 16,
-    borderBottom: "0.5px solid #aaa",
+  const line = {
+    ...borderB,
+    display: 'inline-block',
+    flex: 1,
   };
+
+  const link = {
+    textAlign: 'center',
+    color: color.c2,
+    fontWeight: 'bold',
+  }
 
   return (
     <div>
-      {children[toggle & 1]}
-      <div style={divStyle}>
-        <a
-          style={aStyle}
-          onClick={() => {
-            setToggle(!toggle);
-          }}
-        >
-          {toggle ? hideByDefault : showByDefault}
-        </a>
+      <div>
+        {children[toggle & 1]}
+      </div>
+      <div className="form-width">
+        <div style={divider} >
+          <span style={line} /><span>or</span><span style={line} />
+        </div>
+        <div style={link}>
+          <a style={{ color: 'inherit' }} onClick={() => { setToggle(!toggle); }} >
+            {toggle ? hideByDefault : showByDefault}
+          </a>
+        </div>
       </div>
     </div>
   );

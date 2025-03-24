@@ -7,11 +7,7 @@ const CreateBlog = () => {
     const { createBlog, toggleBlogFormRef } = useCreateBlog();
 
     return (
-        <ToggleVisibility
-            showLabel="Create New Blog"
-            hideLabel="Cancel"
-            ref={toggleBlogFormRef}
-        >
+        <ToggleVisibility ref={toggleBlogFormRef}>
             <BlogForm createBlog={createBlog} />
         </ToggleVisibility>
     )

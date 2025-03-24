@@ -1,5 +1,6 @@
 import React from 'react'
 import { useBlogQuery, useField } from '../hooks';
+import { flex, listStyle, size, color } from '../styles';
 
 const Comments = () => {
     const { blog, commentBlog } = useBlogQuery();
@@ -13,23 +14,22 @@ const Comments = () => {
         comment.reset()
     }
 
-    const flex = {
-        display: "flex",
-        justifyContent: "space-between",
-        gap: 16,
-    };
+    const form = {
+        ...flex,
+        width: '100%',
+        marginBottom: size.sz5,
+    }
 
-    const listStyle = {
-        padding: "16px 8px 4px",
-        listStyle: "none",
-        borderBottom: "solid 1px #d1d1d1",
+    const input = {
+        flex: 1,
+        margin: 0,
     }
 
     return (
         <div>
             <h3>Comments</h3>
-            <form style={flex}>
-                <input { ...comment } style={{ flex: 1 }} />
+            <form style={form}>
+                <input { ...comment } style={input} />
                 <input type="button" value="Comment" onClick={handleAddComment} />
             </form>
             <ul>

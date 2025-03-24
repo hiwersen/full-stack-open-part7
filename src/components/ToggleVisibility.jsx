@@ -1,8 +1,8 @@
 import { useState, forwardRef, useImperativeHandle } from "react";
-import PropTypes from "prop-types";
+import { shadow, styleInitial } from "../styles";
 
 const ToggleVisibility = forwardRef(
-  ({ showLabel, hideLabel, children }, refs) => {
+  ({ children }, refs) => {
     const [visibility, setVisibility] = useState(false);
 
     const toggleVisibility = () => {
@@ -16,22 +16,28 @@ const ToggleVisibility = forwardRef(
     });
 
     const style = {
-      width: 344,
-      paddingRight: 8,
-      paddingLeft: 8,
-      margin: "36px 0",
-    };
+      ...styleInitial,
+      ...shadow,
+      cursor: 'pointer',
+    }
 
     return (
-      <div style={style}>
+      <div>
+        <div style={{ display: visibility ? "none" : "" }}>
+          <h2>
+            <span className="btnInvert createBtn" style={style} onClick={toggleVisibility}>
+              C
+            </span>
+            <span>reate New Blog</span>
+          </h2>
+        </div>
         <div style={{ display: visibility ? "" : "none" }}>
           {children}
-          <button onClick={toggleVisibility} style={{ marginTop: 25 }}>
-            {hideLabel}
-          </button>
-        </div>
-        <div style={{ display: visibility ? "none" : "" }}>
-          <button onClick={toggleVisibility}>{showLabel}</button>
+          <div className="form-width">
+            <button className="btnInvert" onClick={toggleVisibility}>
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -39,10 +45,5 @@ const ToggleVisibility = forwardRef(
 );
 
 ToggleVisibility.displayName = "ToggleVisibility";
-
-ToggleVisibility.propTypes = {
-  showLabel: PropTypes.string.isRequired,
-  hideLabel: PropTypes.string.isRequired,
-};
 
 export default ToggleVisibility;

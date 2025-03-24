@@ -1,6 +1,7 @@
 import Field from "./Field"
 import { useField } from "../hooks/index";
 import PropTypes from "prop-types";
+import Subheading from "./Subheading";
 
 const BlogForm = ({ createBlog }) => {
   const title = useField("title");
@@ -19,16 +20,9 @@ const BlogForm = ({ createBlog }) => {
     url.reset();
   };
 
-  const style = {
-    width: "100%",
-    marginBottom: 8,
-    padding: "2px 4px",
-    textAlign: "center",
-  };
-
   return (
     <div>
-      <h2 style={style}>Create New Blog</h2>
+      <Subheading text="Create New Blog" />
       <form>
         <Field attributes={ title } />
         <Field attributes={ author } />

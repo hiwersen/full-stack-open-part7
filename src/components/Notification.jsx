@@ -1,4 +1,5 @@
 import { useNotificationValue } from "../hooks";
+import { dynamicWidth, size } from "../styles";
 
 const Notification = () => {
   const notification = useNotificationValue()
@@ -9,24 +10,22 @@ const Notification = () => {
   const shadow = notification.error ? "#e1afab" : "#abc4a2";
 
   const style = {
+    ...dynamicWidth,
     position: "fixed",
     top: 0,
     left: "50%",
     transform: "translate(-50%, -0%)",
-    minWidth: 360,
-    maxWidth: 720,
-    width: "100%",
     backgroundColor: "lightGray",
     opacity: 0.9,
-    borderRadius: 2,
-    border: `solid 2px ${color}`,
-    padding: "0.25em 0.5em",
+    borderRadius: size.sz1,
+    border: `solid ${size.sz1} ${color}`,
+    padding: `${size.sz6} ${size.sz5}`,
     color,
     fontSize: "1.5em",
     fontStyle: "italic",
     fontWeight: "bold",
     textAlign: "center",
-    boxShadow: `0 8px 12px ${shadow}`,
+    boxShadow: `0 ${size.sz4} ${size.sz5} ${shadow}`,
     zIndex: 99,
   };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useBlogQuery } from '../hooks/index';
 import { Link } from 'react-router-dom';
+import { color, size, listStyle, flex } from '../styles';
 
 const Bloglist = () => {
     const {
@@ -13,26 +14,26 @@ const Bloglist = () => {
 
     if (isError) return <div>Error...</div>
 
-    const style = {
-        padding: "24px 16px 12px",
-        border: "solid 0.5px lightgray",
-        borderRadius: 4,
-        marginBottom: 12,
-        boxShadow: "0 8px 12px #d1d1d1",
-        display: 'flex',
-        justifyContent: 'space-between',
-      };
+    const ulStyle = {
+        padding: `${size.sz7} 0`,
+        width: '100%',
+        fontSize: '1.17em',
+    };
+
+    const liStyle = {
+        ...listStyle,
+        ...flex,
+        fontWeight: 'bold',
+    }
 
     const authorStyle = {
-        color: "#606060",
-        marginLeft: 12,
-        fontSize: 14,
+        color: color.c3,
     }
 
     return (
-        <ul style={{ width: "100%" }}>
+        <ul style={ulStyle}>
             {blogs.map((blog) => (
-                <li className="blog" style={style} key={blog.id}>
+                <li className="blog" style={liStyle} key={blog.id}>
                     <Link to={`/blogs/${blog.id}`}>
                         {blog.title}
                     </Link>

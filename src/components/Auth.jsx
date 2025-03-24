@@ -3,21 +3,18 @@ import ToggleComponents from './ToggleComponents';
 import AuthForm from './AuthForm';
 import { useAuth, useUserValue } from '../hooks';
 import { Navigate } from 'react-router-dom';
+import { dynamicWidth } from '../styles';
 
 const Auth = () => {
     const { signup, login } = useAuth();
     const user = useUserValue();
 
-    const style = {
-        width: 328,
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -75%)",
-        transformOrigin: "top",
-      };
-
     if (user) return <Navigate to="/" replace />
+
+    const style = {
+        ...dynamicWidth,
+        minHeight: '100vh',
+    }
 
     return (
         <section style={style}>

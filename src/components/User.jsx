@@ -1,32 +1,34 @@
 import React from 'react'
 import { useMatch } from "react-router-dom"
 import { useUsersQuery } from '../hooks';
+import { listStyle, flex, color, size } from '../styles';
+import Subheading from './Subheading';
+import { Link } from 'react-router-dom';
 
 const User = () => {
     const match = useMatch('/users/:id');
     const { users } = useUsersQuery();
     const user = users.find(({ id }) => match.params.id === id) || null
+    const name = user?.name || user?.username || 'Anonymous';
 
-    const listStyle = {
-        padding: "16px 8px 4px",
-        listStyle: "none",
-        borderBottom: "solid 1px #d1d1d1",
-    }
-
-    const flex = {
-        display: "flex",
-        justifyContent: "space-between",
+    const liStyle = {
+        ...flex,
+        ...listStyle,
     };
 
+    const style = {
+        padding: `${size.sz7} 0`,
+    }
+
     return user && (
-        <section style={{ margin: "44px 24px" }}>
-            <h2>{ user.name || user.username }</h2>
-            <ul>
+        <section>
+            <Subheading text={ name } />
+            <ul style={style}>
                 {
                     user.blogs.map(blog => (
-                        <li style={{ ...listStyle, ...flex }} key={blog.id}>
-                            <span>Title: { blog.title }</span>
-                            <span style={{ fontStyle: "italic", color: "#606060" }}>by: { blog.author }</span>
+                        <li style={liStyle} key={blog.id}>
+                            <span>Title: <Link to={`/blogs/${blog.id}`}>{blog.title}</Link></span>
+                            <span style={{ color: color.c3 }}>by: { blog.author }</span>
                         </li>
                     ))
                  }

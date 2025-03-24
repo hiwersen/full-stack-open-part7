@@ -11,7 +11,6 @@ import { Routes, Route  } from "react-router-dom"
 const App = () => {
   return (
     <>
-      <h1>Blogs</h1>
       <Notification />
         <Routes>
           {/* Unprotected Routes */}

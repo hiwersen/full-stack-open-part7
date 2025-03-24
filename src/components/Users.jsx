@@ -1,37 +1,38 @@
 import React from 'react'
 import { useUsersQuery } from '../hooks/index'
 import { Link } from "react-router-dom"
+import { flex, listStyle, size } from '../styles'
+import Subheading from './Subheading'
 
 const Users = () => {
   const { users } = useUsersQuery();
 
-  const flex = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    gap: 24,
+  const style = {
+    ...flex,
+    padding: `${size.sz7} 0`,
   }
 
-  const listStyle = {
-    padding: "16px 8px 4px",
-    listStyle: "none",
-    borderBottom: "solid 1px #d1d1d1",
-}
-
   return (
-    <section style={{ margin: "44px 24px" }}>
-      <h2>Users</h2>
-      <div style={flex}>
-        <div style={{ flex: 1 }}>
+    <section>
+      <Subheading text="Users" />
+      <div style={style}>
+        <div style={{ flex: 2 }}>
           <h3>Name</h3>
+          <ul>
           { users.map(user => (
-              <div style={listStyle} key={user.id}>
+              <li style={listStyle} key={user.id}>
                 <Link to={`/users/${user.id}`}>{user?.name || user.username}</Link>
-              </div>
+              </li>
             )) }
+          </ul>
         </div>
         <div>
           <h3>Blogs Created</h3>
-          { users.map(user => (<div style={listStyle} key={user.id}>{user.blogs.length}</div>)) }
+          <ul>
+            { users.map(user => (
+              <li style={listStyle} key={user.id}>{user.blogs.length}</li>
+            )) }
+          </ul>
         </div>
       </div>
     </section>
