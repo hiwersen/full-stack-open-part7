@@ -3,7 +3,7 @@ import { useUserValue, useBlogQuery } from '../hooks';
 import { color, size, flex } from '../styles';
 
 const BlogDetails = () => {
-    const { blog, updateBlog, deleteBlog } = useBlogQuery();
+    const { blog, likeBlog, deleteBlog, userHasLiked } = useBlogQuery();
     const user = useUserValue();
 
     const style = {
@@ -29,14 +29,12 @@ const BlogDetails = () => {
     }
 
       const likeBtn = () => {
-        const likes = Number(blog.likes || 0) + 1;
-        const blogToDelete = { ...blog, likes }
-
         return (
           <input
+            className={userHasLiked ? "" : "inputBtnInvert"}
             type="button"
             value="Like"
-            onClick={() => updateBlog(blogToDelete)}
+            onClick={() => likeBlog(blog)}
           />
         );
       };
@@ -70,7 +68,7 @@ const BlogDetails = () => {
             <div data-testid="likes" style={flex}>
               <span>
                   <span>Likes </span>
-                  <span data-testid="likes-count">{blog.likes}</span>
+                  <span data-testid="likes-count">{blog.likes.length}</span>
               </span>
               {likeBtn()}
             </div>

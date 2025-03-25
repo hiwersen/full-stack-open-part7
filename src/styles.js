@@ -25,7 +25,6 @@ export const flex = {
 };
 
 export const dynamicWidth = {
-    // backgroundColor: 'red',
     minWidth: 360,
     maxWidth: 720,
     width: "100%",

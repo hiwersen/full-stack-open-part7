@@ -59,7 +59,7 @@ export const useBlogQuery = () => {
     const blogsQuery = useQuery({
         queryKey: ['blogs'],
         queryFn: blogService.getAll,
-        select: blogs => [...blogs].sort((a, b) => b.likes - a.likes),
+        select: blogs => [...blogs].sort((a, b) => b.likes.length - a.likes.length),
         retry: false,
       })
 
@@ -78,6 +78,22 @@ export const useBlogQuery = () => {
           console.error(error.message);
         }
     })
+
+    const likeBlogMutation = useMutation({
+      mutationFn: blogService.like,
+      onSuccess: (likedBlog) => {
+        queryClient.setQueryData(['blogs'], blogs => blogs.map(b => b.id === likedBlog.id ? likedBlog : b));
+        const message = `"${likedBlog.title}" liked`;
+        showNotification({ message: message, error: false });
+
+        console.log(likedBlog)
+      },
+      onError: error => {
+        const message = error.response?.data?.error || "error liking blog";
+        showNotification({ message, error: true });
+        console.error(error.message);
+      }
+  })
 
     const commentBlogMutation = useMutation({
       mutationFn: blogService.comment,
@@ -110,6 +126,20 @@ export const useBlogQuery = () => {
       updateBlogMutation.mutate(blogToUpdate)
     };
 
+    let userHasLiked;
+
+    const useLikeBlog = () => {
+      const user = useUserValue();
+      userHasLiked = blog?.likes?.some(({ username }) => username === user.username);
+
+      return (blogToLike) => {
+        const message = `You have already liked this blog!`;
+        if (userHasLiked) return showNotification({ message, error: true });
+
+        likeBlogMutation.mutate(blogToLike)
+      }
+    }
+
     const commentBlog = (commentToAdd) => {
       commentBlogMutation.mutate(commentToAdd)
     };
@@ -131,8 +161,10 @@ export const useBlogQuery = () => {
         isLoading: blogsQuery.isLoading,
         isError: blogsQuery.isError,
         updateBlog,
+        likeBlog: useLikeBlog(),
         commentBlog,
         deleteBlog,
+        userHasLiked,
     }
 }
 

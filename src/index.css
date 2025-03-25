@@ -115,11 +115,20 @@ input[type="button"] {
   border-color: var(--text-color3);
 }
 
+.inputBtnInvert.inputBtnInvert {
+  background-color: var(--text-color3);
+  color: var(--text-color4);
+}
+
 input[type="button"]:hover {
-  color: var(--text-color3);
-  border-color: var(--text-color3);
   text-shadow: var(--sz1) var(--sz1) var(--sz1) var(--text-color2);
   box-shadow: var(--sz1) var(--sz1) var(--sz1) var(--bg-color2);
+}
+
+.inputBtnInvert:hover {
+  background-color: unset;
+  color: var(--text-color3);
+  border-color: var(--text-color3);
 }
 
 button {

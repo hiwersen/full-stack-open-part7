@@ -34,7 +34,13 @@ const Comments = () => {
             <h3>Comments</h3>
             <form style={form}>
                 <input { ...comment } style={input} />
-                <input style={btn} type="button" value="Comment" onClick={handleAddComment} />
+                <input
+                    className="inputBtnInvert"
+                    style={btn}
+                    type="button"
+                    value="Comment"
+                    onClick={handleAddComment}
+                />
             </form>
             <ul>
             { blog.comments.map((c, i) => <li style={listStyle} key={i}>{c}</li>) }
