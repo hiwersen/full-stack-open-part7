@@ -3,5 +3,5 @@ dist
 build
 coverage
 
-# Ignore all HTML files:
+# Ignore files:
 package.json

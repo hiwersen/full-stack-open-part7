@@ -4,7 +4,7 @@ import App from "./App";
 import "./index.css";
 import { NotificationContextProvider } from "./NotificationContext";
 import { UserContextProvider } from "./UserContext";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
 
 const queryClient = new QueryClient();
@@ -12,7 +12,12 @@ const queryClient = new QueryClient();
 const root = createRoot(document.getElementById("root"));
 root.render(
   <StrictMode>
-    <div>
+    <div
+      style={{
+        position: "relative",
+        minHeight: "100vh",
+      }}
+    >
       <QueryClientProvider client={queryClient}>
         <UserContextProvider>
           <NotificationContextProvider>

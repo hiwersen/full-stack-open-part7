@@ -9,7 +9,7 @@
   --bg-color2: #dadada;
   --bg-color3: #0e7eda;
   --bg-color4: #b0b0b0;
-  --bg-color5: rgba(255, 255, 255, 0.5);
+  --bg-color5: #ffffff80;
 
   --text-color1: #464646;
   --text-color2: #b0b0b0;
@@ -25,7 +25,6 @@
   --sz7: 36px;
   --sz8: 80px;
 }
-
 
 body {
   overflow-x: hidden;
@@ -79,7 +78,7 @@ a {
 a:hover {
   color: var(--text-color3);
   cursor: pointer;
-  text-shadow: var(--sz1) var(--sz1) var(--sz1) var(--bg-color2);
+  text-shadow: 1px 1px 1px var(--bg-color2);
 }
 
 label {
@@ -89,13 +88,13 @@ label {
 
 input {
   -webkit-appearance: none;
-  -moz-appearance: none; 
+  -moz-appearance: none;
   appearance: none;
   box-shadow: none;
   border: unset;
 }
 
-input:not([type=button]) {
+input:not([type="button"]) {
   font-size: 1rem;
   padding: var(--sz3);
   width: 100%;
@@ -121,7 +120,7 @@ input[type="button"] {
 }
 
 input[type="button"]:hover {
-  text-shadow: var(--sz1) var(--sz1) var(--sz1) var(--text-color2);
+  text-shadow: 1px 1px 1px var(--text-color2);
   box-shadow: var(--sz1) var(--sz1) var(--sz1) var(--bg-color2);
 }
 
@@ -158,13 +157,13 @@ button:hover {
   background-color: unset;
   border: double var(--sz2) var(--text-color3);
   box-shadow: var(--sz1) var(--sz1) var(--sz1) var(--bg-color2);
-  text-shadow: var(--sz1) var(--sz1) var(--sz1) var(--bg-color2);
+  text-shadow: 1px 1px 1px var(--bg-color2);
 }
 
 .btnInvert:hover {
   border: solid 1px var(--text-color3);
   box-shadow: var(--sz1) var(--sz1) var(--sz1) var(--bg-color2);
-  text-shadow: var(--sz1) var(--sz1) var(--sz1) var(--bg-color2);
+  text-shadow: 1px 1px 1px var(--bg-color2);
 }
 
 form,
@@ -172,7 +171,6 @@ form,
   width: clamp(320px, 88vw, 400px);
   margin: auto;
 }
-
 
 footer {
   font-style: italic;
@@ -182,7 +180,6 @@ footer {
   background-color: var(--bg-color2);
   text-align: center;
   flex: 1;
-
 }
 
 .logo,
