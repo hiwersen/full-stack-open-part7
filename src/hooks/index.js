@@ -65,95 +65,28 @@ export const useUsersQuery = () => {
   };
 };
 
-export const useBlogQuery = () => {
-  const blogsQuery = useQuery({
-    queryKey: ["blogs"],
-    queryFn: blogService.getAll,
-    select: (blogs) =>
-      [...blogs].sort((a, b) => b.likes.length - a.likes.length),
-    retry: false,
-  });
-
+export const useBlog = () => {
   const match = useMatch("/blogs/:id");
-  const blogs = blogsQuery.data || [];
-  const blog =
-    match && (blogs.find(({ id }) => match.params.id === id) || null);
-
-  return {
-    blog,
-  };
-};
-
-export const useAuth = () => {
-  const showNotification = useShowNotification();
-  const userDispatch = useUserDispatch();
-  const navigate = useNavigate();
-
-  const signup = async (userToSignup) => {
-    try {
-      const user = await usersService.post(userToSignup);
-
-      if (user) {
-        login({
-          username: userToSignup.username,
-          password: userToSignup.password,
-        });
-      }
-    } catch (error) {
-      const message = error.response.data.error || error.message;
-      showNotification({ message, error: true });
-    }
-  };
-
-  const login = async (userToLogin) => {
-    try {
-      const user = await loginService.login(userToLogin);
-      window.localStorage.setItem("user", JSON.stringify(user));
-      blogService.setToken(user.token);
-      userDispatch({ type: "SET", payload: user });
-      navigate("/");
-    } catch (error) {
-      const message = error.response.data.error || error.message;
-      showNotification({ message, error: true });
-    }
-  };
-
-  const logout = () => {
-    window.localStorage.removeItem("user");
-    blogService.setToken(null);
-    userDispatch({ type: "CLEAR" });
-  };
-
-  return {
-    signup,
-    login,
-    logout,
-  };
-};
-
-export const useInitializeBlogs = () => {
   const dispatch = useDispatch();
+  const showNotification = useShowNotification();
+  const toggleBlogFormRef = useRef();
+  const user = useUserValue();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(setBlogs());
   }, [dispatch]);
-};
 
-export const useBlogs = () => {
   const selectBlogs = (state) => state.blogs;
   const outputSelector = (blogs) => {
     return [...blogs].sort((a, b) => b.likes.length - a.likes.length);
   };
-
   const memoizedSelector = createSelector([selectBlogs], outputSelector);
 
-  return useSelector(memoizedSelector);
-};
+  const blogs = useSelector(memoizedSelector);
 
-export const useCreateBlog = () => {
-  const dispatch = useDispatch();
-  const showNotification = useShowNotification();
-  const toggleBlogFormRef = useRef();
+  const blog =
+    match && (blogs.find(({ id }) => match.params.id === id) || null);
 
   const createBlog = async (blogToCreate) => {
     try {
@@ -168,13 +101,6 @@ export const useCreateBlog = () => {
     }
   };
 
-  return { createBlog, toggleBlogFormRef };
-};
-
-export const useUpdateBlog = () => {
-  const dispatch = useDispatch();
-  const showNotification = useShowNotification();
-
   const updateBlog = async (blogToUpdate) => {
     try {
       await dispatch(updateBlogAction(blogToUpdate));
@@ -186,16 +112,7 @@ export const useUpdateBlog = () => {
     }
   };
 
-  return updateBlog;
-};
-
-// ! TODO: update blog after likeBlog call!
-let userHasLiked;
-export const useLikeBlog = () => {
-  const user = useUserValue();
-  const dispatch = useDispatch();
-  const showNotification = useShowNotification();
-
+  let userHasLiked = false;
   const likeBlog = async (blogToLike) => {
     userHasLiked = blogToLike?.likes?.some(
       ({ username }) => username === user.username,
@@ -213,14 +130,6 @@ export const useLikeBlog = () => {
     }
   };
 
-  return likeBlog;
-};
-
-// ! TODO: update blog after commentBlog call!
-export const useCommentBlog = () => {
-  const dispatch = useDispatch();
-  const showNotification = useShowNotification();
-
   const commentBlog = async (comment) => {
     try {
       await dispatch(commentBlogAction(comment));
@@ -231,14 +140,6 @@ export const useCommentBlog = () => {
       showNotification({ message, error: true });
     }
   };
-
-  return commentBlog;
-};
-
-export const useDeleteBlog = () => {
-  const dispatch = useDispatch();
-  const showNotification = useShowNotification();
-  const navigate = useNavigate();
 
   const deleteBlog = async (blogToDelete) => {
     const ok = window.confirm(
@@ -260,7 +161,17 @@ export const useDeleteBlog = () => {
     }
   };
 
-  return deleteBlog;
+  return {
+    blog,
+    blogs,
+    createBlog,
+    updateBlog,
+    likeBlog,
+    commentBlog,
+    deleteBlog,
+    toggleBlogFormRef,
+    userHasLiked,
+  };
 };
 
 export const useField = (name, type = "text") => {

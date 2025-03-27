@@ -4,7 +4,9 @@ import CreateBlog from "./CreateBlog";
 
 const Home = () => {
   const flex = {
-    position: "relative", display: "flex", flexDirection: "column",
+    position: "relative",
+    display: "flex",
+    flexDirection: "column",
     alignItems: "center",
   };
 

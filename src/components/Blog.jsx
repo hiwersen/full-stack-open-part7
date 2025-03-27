@@ -1,11 +1,11 @@
-import { useBlogQuery } from "../hooks";
+import { useBlog } from "../hooks";
 import Subheading from "./Subheading";
 import BlogDetails from "./BlogDetails";
 import Comments from "./Comments";
 import { Navigate } from "react-router-dom";
 
 const Blog = () => {
-  const { blog } = useBlogQuery();
+  const { blog } = useBlog();
 
   if (!blog) return <Navigate to="/" replace />;
 

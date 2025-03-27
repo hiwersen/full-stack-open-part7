@@ -1,10 +1,9 @@
 import React from "react";
-import { useBlogQuery, useCommentBlog, useField } from "../hooks";
+import { useBlog, useField } from "../hooks";
 import { flex, listStyle, size } from "../styles";
 
 const Comments = () => {
-  const { blog } = useBlogQuery();
-  const commentBlog = useCommentBlog();
+  const { blog, commentBlog } = useBlog();
   const comment = useField("comment");
 
   const handleAddComment = () => {

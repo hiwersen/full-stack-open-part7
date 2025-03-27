@@ -1,11 +1,10 @@
 import React from "react";
-import { useBlogQuery, useBlogs } from "../hooks/index";
+import { useBlog } from "../hooks/index";
 import { Link } from "react-router-dom";
 import { color, size, listStyle, flex, styleInitial } from "../styles";
 
 const Bloglist = () => {
-  const { isLoading, isError } = useBlogQuery();
-  const blogs = useBlogs();
+  const { blogs, isLoading, isError } = useBlog();
 
   const error = {
     ...styleInitial,
