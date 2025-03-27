@@ -1,5 +1,4 @@
-import { useContext, useRef, useState } from "react";
-import NotificationContext from "../NotificationContext";
+import { useContext, useRef, useState, useEffect } from "react";
 import UserContext from "../UserContext";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import blogService from "../services/blogs";
@@ -11,6 +10,7 @@ import {
   doRemoveNotification,
   doSetNotification,
 } from "../reducers/notificationReducer";
+import { setBlogs } from "../reducers/blogReducer";
 
 export const useUserValue = () => {
   return useContext(UserContext).user[0];
@@ -55,6 +55,18 @@ export const useUsersQuery = () => {
     isLoading: usersQuery.isLoading,
     isError: usersQuery.isError,
   };
+};
+
+export const useInitializeBlogs = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setBlogs());
+  }, [dispatch]);
+};
+
+export const useBlogs = () => {
+  return useSelector((state) => state.blogs);
 };
 
 export const useBlogQuery = () => {
