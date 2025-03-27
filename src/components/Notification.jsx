@@ -28,7 +28,7 @@ const Notification = () => {
 
   return (
     <div style={style}>
-      <p>Hello Redux</p>
+      <p>{notification.message}</p>
     </div>
   );
 };

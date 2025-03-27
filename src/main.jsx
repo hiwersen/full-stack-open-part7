@@ -2,7 +2,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
-import { NotificationContextProvider } from "./NotificationContext";
+import { Provider } from "react-redux";
+import store from "./store";
 import { UserContextProvider } from "./UserContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -20,11 +21,11 @@ root.render(
     >
       <QueryClientProvider client={queryClient}>
         <UserContextProvider>
-          <NotificationContextProvider>
+          <Provider store={store}>
             <Router>
               <App />
             </Router>
-          </NotificationContextProvider>
+          </Provider>
         </UserContextProvider>
       </QueryClientProvider>
     </div>

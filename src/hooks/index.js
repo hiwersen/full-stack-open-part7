@@ -6,6 +6,11 @@ import blogService from "../services/blogs";
 import loginService from "../services/login";
 import usersService from "../services/users";
 import { useNavigate, useMatch } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  doRemoveNotification,
+  doSetNotification,
+} from "../reducers/notificationReducer";
 
 export const useUserValue = () => {
   return useContext(UserContext).user[0];
@@ -20,21 +25,21 @@ export const useUserLoading = () => {
 };
 
 export const useNotificationValue = () => {
-  return useContext(NotificationContext)[0];
+  return useSelector((state) => state.notification);
 };
 
 export const useShowNotification = () => {
   const notification = useNotificationValue();
-  const dispatch = useContext(NotificationContext)[1];
+  const dispatch = useDispatch();
 
   return (notificationToShow) => {
     notification && clearTimeout(notification?.timeoutID);
 
     notificationToShow.timeoutID = setTimeout(() => {
-      dispatch({ type: "CLEAR" });
+      dispatch(doRemoveNotification());
     }, 5000);
 
-    dispatch({ type: "SHOW", payload: notificationToShow });
+    dispatch(doSetNotification(notificationToShow));
   };
 };
 
@@ -72,7 +77,7 @@ export const useBlogQuery = () => {
         blogs.map((b) => (b.id === updatedBlog.id ? updatedBlog : b)),
       );
       const message = `"${updatedBlog.title}" has been updated`;
-      showNotification({ message: message, error: false });
+      showNotification({ message, error: false });
     },
     onError: (error) => {
       const message = error.response?.data?.error || "error updating blog";
@@ -242,7 +247,7 @@ export const useCreateBlog = () => {
       const blogs = queryClient.getQueryData(["blogs"]);
       queryClient.setQueryData(["blogs"], blogs.concat(blog));
       const message = `a new blog "${blog.title}" by ${blog.author} added`;
-      showNotification({ message: message, error: false });
+      showNotification({ message, error: false });
       toggleBlogFormRef.current.toggleVisibility();
     },
     onError: (error) => {
