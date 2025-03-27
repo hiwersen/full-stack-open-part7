@@ -10,7 +10,15 @@ import {
   doRemoveNotification,
   doSetNotification,
 } from "../reducers/notificationReducer";
-import { setBlogs } from "../reducers/blogReducer";
+import {
+  setBlogs,
+  createBlog as createBlogAction,
+  likeBlog as likeBlogAction,
+  commentBlog as commentBlogAction,
+  updateBlog as updateBlogAction,
+  deleteBlog as deleteBlogAction,
+} from "../reducers/blogReducer";
+import { createSelector } from "@reduxjs/toolkit";
 
 export const useUserValue = () => {
   return useContext(UserContext).user[0];
@@ -57,21 +65,7 @@ export const useUsersQuery = () => {
   };
 };
 
-export const useInitializeBlogs = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(setBlogs());
-  }, [dispatch]);
-};
-
-export const useBlogs = () => {
-  return useSelector((state) => state.blogs);
-};
-
 export const useBlogQuery = () => {
-  const showNotification = useShowNotification();
-
   const blogsQuery = useQuery({
     queryKey: ["blogs"],
     queryFn: blogService.getAll,
@@ -80,124 +74,13 @@ export const useBlogQuery = () => {
     retry: false,
   });
 
-  const queryClient = useQueryClient();
-
-  const updateBlogMutation = useMutation({
-    mutationFn: blogService.update,
-    onSuccess: (updatedBlog) => {
-      queryClient.setQueryData(["blogs"], (blogs) =>
-        blogs.map((b) => (b.id === updatedBlog.id ? updatedBlog : b)),
-      );
-      const message = `"${updatedBlog.title}" has been updated`;
-      showNotification({ message, error: false });
-    },
-    onError: (error) => {
-      const message = error.response?.data?.error || "error updating blog";
-      showNotification({ message, error: true });
-      console.error(error.message);
-    },
-  });
-
-  const likeBlogMutation = useMutation({
-    mutationFn: blogService.like,
-    onSuccess: (likedBlog) => {
-      queryClient.setQueryData(["blogs"], (blogs) =>
-        blogs.map((b) => (b.id === likedBlog.id ? likedBlog : b)),
-      );
-      const message = `"${likedBlog.title}" liked`;
-      showNotification({ message: message, error: false });
-
-      console.log(likedBlog);
-    },
-    onError: (error) => {
-      const message = error.response?.data?.error || "error liking blog";
-      showNotification({ message, error: true });
-      console.error(error.message);
-    },
-  });
-
-  const commentBlogMutation = useMutation({
-    mutationFn: blogService.comment,
-    onSuccess: (commentedBlog, comment) => {
-      queryClient.setQueryData(["blogs"], (blogs) =>
-        blogs.map((b) => (b.id === commentedBlog.id ? commentedBlog : b)),
-      );
-      const message = `comment: "${comment.comment}" added to "${commentedBlog.title}"`;
-      showNotification({ message: message, error: false });
-    },
-    onError: (error) => {
-      const message = error.response?.data?.error || "error commenting blog";
-      showNotification({ message, error: true });
-      console.error(error.message);
-    },
-  });
-
-  const deleteBlogMutation = useMutation({
-    mutationFn: blogService.delete,
-    onSuccess: (_, deletedBlog) => {
-      queryClient.setQueryData(["blogs"], (blogs) =>
-        blogs.filter((b) => b.id !== deletedBlog.id),
-      );
-      const message = `blog "${deletedBlog.title}" has been deleted`;
-      showNotification({ message: message, error: false });
-    },
-    onError: (error, blog) => {
-      const message =
-        error.response?.data?.error || `error deleting blog: "${blog.title}"`;
-      showNotification({ message, error: true });
-    },
-  });
-
-  const updateBlog = (blogToUpdate) => {
-    updateBlogMutation.mutate(blogToUpdate);
-  };
-
-  let userHasLiked;
-
-  const useLikeBlog = () => {
-    const user = useUserValue();
-    userHasLiked = blog?.likes?.some(
-      ({ username }) => username === user.username,
-    );
-
-    return (blogToLike) => {
-      const message = `You have already liked this blog!`;
-      if (userHasLiked) return showNotification({ message, error: true });
-
-      likeBlogMutation.mutate(blogToLike);
-    };
-  };
-
-  const commentBlog = (commentToAdd) => {
-    commentBlogMutation.mutate(commentToAdd);
-  };
-
-  const deleteBlog = (blogToDelete) => {
-    const ok = window.confirm(
-      `Delete blog "${blogToDelete.title}" by ${blogToDelete.author}?`,
-    );
-    if (!ok) return;
-
-    deleteBlogMutation.mutate(blogToDelete);
-  };
-
   const match = useMatch("/blogs/:id");
   const blogs = blogsQuery.data || [];
   const blog =
     match && (blogs.find(({ id }) => match.params.id === id) || null);
 
-  const likeBlog = useLikeBlog();
-
   return {
     blog,
-    blogs,
-    isLoading: blogsQuery.isLoading,
-    isError: blogsQuery.isError,
-    updateBlog,
-    likeBlog,
-    commentBlog,
-    deleteBlog,
-    userHasLiked,
   };
 };
 
@@ -248,31 +131,136 @@ export const useAuth = () => {
   };
 };
 
+export const useInitializeBlogs = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setBlogs());
+  }, [dispatch]);
+};
+
+export const useBlogs = () => {
+  const selectBlogs = (state) => state.blogs;
+  const outputSelector = (blogs) => {
+    return [...blogs].sort((a, b) => b.likes.length - a.likes.length);
+  };
+
+  const memoizedSelector = createSelector([selectBlogs], outputSelector);
+
+  return useSelector(memoizedSelector);
+};
+
 export const useCreateBlog = () => {
+  const dispatch = useDispatch();
   const showNotification = useShowNotification();
-  const queryClient = useQueryClient();
   const toggleBlogFormRef = useRef();
 
-  const createBlogMutation = useMutation({
-    mutationFn: blogService.create,
-    onSuccess: (blog) => {
-      const blogs = queryClient.getQueryData(["blogs"]);
-      queryClient.setQueryData(["blogs"], blogs.concat(blog));
-      const message = `a new blog "${blog.title}" by ${blog.author} added`;
+  const createBlog = async (blogToCreate) => {
+    try {
+      await dispatch(createBlogAction(blogToCreate));
+      const message = `a new blog "${blogToCreate.title}" by ${blogToCreate.author} added`;
       showNotification({ message, error: false });
-      toggleBlogFormRef.current.toggleVisibility();
-    },
-    onError: (error) => {
+      toggleBlogFormRef.current?.toggleVisibility();
+    } catch (error) {
+      console.log("error:", error);
       const message = error.response?.data?.error || "error creating new blog";
       showNotification({ message, error: true });
-    },
-  });
-
-  const createBlog = (blogToCreate) => {
-    createBlogMutation.mutate(blogToCreate);
+    }
   };
 
   return { createBlog, toggleBlogFormRef };
+};
+
+export const useUpdateBlog = () => {
+  const dispatch = useDispatch();
+  const showNotification = useShowNotification();
+
+  const updateBlog = async (blogToUpdate) => {
+    try {
+      await dispatch(updateBlogAction(blogToUpdate));
+      const message = `"${blogToUpdate.title}" has been updated`;
+      showNotification({ message, error: false });
+    } catch (error) {
+      const message = error.response?.data?.error || "error updating blog";
+      showNotification({ message, error: true });
+    }
+  };
+
+  return updateBlog;
+};
+
+// ! TODO: update blog after likeBlog call!
+let userHasLiked;
+export const useLikeBlog = () => {
+  const user = useUserValue();
+  const dispatch = useDispatch();
+  const showNotification = useShowNotification();
+
+  const likeBlog = async (blogToLike) => {
+    userHasLiked = blogToLike?.likes?.some(
+      ({ username }) => username === user.username,
+    );
+    const message = `You have already liked this blog!`;
+    if (userHasLiked) return showNotification({ message, error: true });
+
+    try {
+      await dispatch(likeBlogAction(blogToLike));
+      const message = `"${blogToLike.title}" liked`;
+      showNotification({ message: message, error: false });
+    } catch (error) {
+      const message = error.response?.data?.error || "error liking blog";
+      showNotification({ message, error: true });
+    }
+  };
+
+  return likeBlog;
+};
+
+// ! TODO: update blog after commentBlog call!
+export const useCommentBlog = () => {
+  const dispatch = useDispatch();
+  const showNotification = useShowNotification();
+
+  const commentBlog = async (comment) => {
+    try {
+      await dispatch(commentBlogAction(comment));
+      const message = `comment: "${comment.comment}" added!`;
+      showNotification({ message: message, error: false });
+    } catch (error) {
+      const message = error.response?.data?.error || "error commenting blog";
+      showNotification({ message, error: true });
+    }
+  };
+
+  return commentBlog;
+};
+
+export const useDeleteBlog = () => {
+  const dispatch = useDispatch();
+  const showNotification = useShowNotification();
+  const navigate = useNavigate();
+
+  const deleteBlog = async (blogToDelete) => {
+    const ok = window.confirm(
+      `Delete blog "${blogToDelete.title}" by ${blogToDelete.author}?`,
+    );
+    if (!ok) return;
+
+    try {
+      await dispatch(deleteBlogAction(blogToDelete));
+      const message = `blog "${blogToDelete.title}" has been deleted`;
+      showNotification({ message: message, error: false });
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+      const message =
+        error.response?.data?.error ||
+        `error deleting blog: "${blogToDelete.title}"`;
+      showNotification({ message, error: true });
+    }
+  };
+
+  return deleteBlog;
 };
 
 export const useField = (name, type = "text") => {

@@ -1,6 +1,5 @@
 import Field from "./Field";
 import { useField } from "../hooks/index";
-import PropTypes from "prop-types";
 import Subheading from "./Subheading";
 
 const BlogForm = ({ createBlog }) => {
@@ -33,10 +32,6 @@ const BlogForm = ({ createBlog }) => {
       </form>
     </div>
   );
-};
-
-BlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired,
 };
 
 export default BlogForm;

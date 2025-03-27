@@ -1,9 +1,16 @@
 import React from "react";
-import { useUserValue, useBlogQuery } from "../hooks";
+import {
+  useUserValue,
+  useBlogQuery,
+  useLikeBlog,
+  useDeleteBlog,
+} from "../hooks";
 import { color, size, flex } from "../styles";
 
 const BlogDetails = () => {
-  const { blog, likeBlog, deleteBlog, userHasLiked } = useBlogQuery();
+  const { blog, userHasLiked } = useBlogQuery();
+  const deleteBlog = useDeleteBlog();
+  const likeBlog = useLikeBlog();
   const user = useUserValue();
 
   const style = {
