@@ -21,5 +21,6 @@ root.render(
         </Router>
       </Provider>
     </div>
+    ,
   </StrictMode>,
 );

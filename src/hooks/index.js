@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate, useMatch } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -12,7 +12,7 @@ import {
   updateBlog as updateBlogAction,
   deleteBlog as deleteBlogAction,
 } from "../reducers/blogReducer";
-import { createUser } from "../reducers/usersReducer";
+import { createUser, setUsers } from "../reducers/usersReducer";
 import { createSelector } from "@reduxjs/toolkit";
 import { doRemoveUser, setUser } from "../reducers/userReducer";
 
@@ -79,7 +79,6 @@ export const useAuth = () => {
 };
 
 export const useBlog = () => {
-  const match = useMatch("/blogs/:id");
   const dispatch = useDispatch();
   const showNotification = useShowNotification();
   const toggleBlogFormRef = useRef();
@@ -93,9 +92,8 @@ export const useBlog = () => {
   const memoizedSelector = createSelector([selectBlogs], outputSelector);
 
   const blogs = useSelector(memoizedSelector);
-
-  const blog =
-    match && (blogs.find(({ id }) => match.params.id === id) || null);
+  const match = useMatch("/blogs/:id");
+  const blog = blogs.find(({ id }) => match?.params.id === id) || null;
 
   const createBlog = async (blogToCreate) => {
     try {
@@ -181,10 +179,6 @@ export const useBlog = () => {
     toggleBlogFormRef,
     userHasLiked,
   };
-};
-
-export const useUsers = () => {
-  return useSelector((state) => state.users);
 };
 
 export const useField = (name, type = "text") => {

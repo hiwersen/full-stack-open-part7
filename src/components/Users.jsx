@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
-import { useUsers } from "../hooks/index";
 import { Link } from "react-router-dom";
 import { flex, listStyle, size } from "../styles";
 import Subheading from "./Subheading";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUsers } from "../reducers/usersReducer";
 
 const Users = () => {
-  const users = useUsers();
   const dispatch = useDispatch();
+  const users = useSelector((state) => state.users);
 
   useEffect(() => {
     dispatch(setUsers());
@@ -20,7 +19,7 @@ const Users = () => {
   };
 
   return (
-    users && (
+    users.length && (
       <section>
         <Subheading text="Users" />
         <div style={style}>

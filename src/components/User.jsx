@@ -1,15 +1,28 @@
-import React from "react";
-import { useMatch } from "react-router-dom";
-import { useUsers } from "../hooks";
+import React, { useEffect, useState } from "react";
 import { listStyle, flex, color, size } from "../styles";
 import Subheading from "./Subheading";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useMatch } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setUsers } from "../reducers/usersReducer";
 
 const User = () => {
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
   const match = useMatch("/users/:id");
-  const users = useUsers();
-  const user = users.find(({ id }) => match.params.id === id) || null;
+  const users = useSelector((state) => state.users);
+  const user = users.find(({ id }) => match?.params.id === id) || null;
+
   const name = user?.name || user?.username;
+
+  useEffect(() => {
+    if (!users.length) {
+      dispatch(setUsers());
+    } else {
+      setLoading(false);
+    }
+  }, [dispatch, users.length]);
+
+  if (!user && !loading) return <Navigate to="/users" replace />;
 
   const liStyle = {
     ...flex,

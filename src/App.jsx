@@ -6,7 +6,7 @@ import Home from "./components/Home";
 import Users from "./components/Users";
 import User from "./components/User";
 import Blog from "./components/Blog";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { doSetUser } from "./reducers/userReducer";
 
@@ -37,6 +37,9 @@ const App = () => {
           <Route path="/users/:id" element={<User />} />
           <Route path="/blogs/:id" element={<Blog />} />
         </Route>
+
+        {/* Catch-all unknown routes */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );
