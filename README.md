@@ -1,4 +1,4 @@
-## Full Stack Open – Part 7
+# Full Stack Open – Part 7
 
 This repository contains exercises and projects for **Full Stack Open Part 7**, focusing on advanced React topics like **React Router**, **custom hooks**, and **styling** with **CSS** and **Webpack**. Multiple sub-projects are organized via **Git subtree merges**:
 
