@@ -18,7 +18,6 @@ export const setUsers = () => {
   return async (dispatch) => {
     const users = await usersService.getAll();
     dispatch(doSetUsers(users));
-    console.log("USERS:", users);
   };
 };
 
