@@ -1,15 +1,15 @@
 import React from "react";
 import { useMatch } from "react-router-dom";
-import { useUsersQuery } from "../hooks";
+import { useUsers } from "../hooks";
 import { listStyle, flex, color, size } from "../styles";
 import Subheading from "./Subheading";
 import { Link } from "react-router-dom";
 
 const User = () => {
   const match = useMatch("/users/:id");
-  const { users } = useUsersQuery();
+  const users = useUsers();
   const user = users.find(({ id }) => match.params.id === id) || null;
-  const name = user?.name || user?.username || "Anonymous";
+  const name = user?.name || user?.username;
 
   const liStyle = {
     ...flex,

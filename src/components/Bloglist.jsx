@@ -1,30 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useBlog } from "../hooks/index";
 import { Link } from "react-router-dom";
-import { color, size, listStyle, flex, styleInitial } from "../styles";
+import { color, size, listStyle, flex } from "../styles";
+import { useDispatch } from "react-redux";
+import { setBlogs } from "../reducers/blogReducer";
 
 const Bloglist = () => {
-  const { blogs, isLoading, isError } = useBlog();
+  const dispatch = useDispatch();
+  const { blogs } = useBlog();
 
-  const error = {
-    ...styleInitial,
-    color: color.error,
-    borderColor: color.error,
-  };
-
-  if (isLoading)
-    return (
-      <div>
-        <span style={styleInitial}>Loading blogs...</span>
-      </div>
-    );
-
-  if (isError)
-    return (
-      <div>
-        <span style={error}>Error loading blogs...</span>
-      </div>
-    );
+  useEffect(() => {
+    dispatch(setBlogs());
+  }, [dispatch]);
 
   const ulStyle = {
     padding: `${size.sz7} 0`,

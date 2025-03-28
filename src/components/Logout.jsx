@@ -1,10 +1,10 @@
 import React from "react";
-import { useAuth, useUserValue } from "../hooks";
+import { useAuth, useUser } from "../hooks";
 import { flex, color, size } from "../styles";
 
 const Logout = () => {
   const { logout } = useAuth();
-  const user = useUserValue();
+  const user = useUser();
   const name = (user?.name || user?.username || "Anonymous").split(" ")[0];
 
   const divStyle = {

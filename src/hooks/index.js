@@ -1,9 +1,4 @@
-import { useContext, useRef, useState, useEffect } from "react";
-import UserContext from "../UserContext";
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import blogService from "../services/blogs";
-import loginService from "../services/login";
-import usersService from "../services/users";
+import { useRef, useState } from "react";
 import { useNavigate, useMatch } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -11,26 +6,15 @@ import {
   doSetNotification,
 } from "../reducers/notificationReducer";
 import {
-  setBlogs,
   createBlog as createBlogAction,
   likeBlog as likeBlogAction,
   commentBlog as commentBlogAction,
   updateBlog as updateBlogAction,
   deleteBlog as deleteBlogAction,
 } from "../reducers/blogReducer";
+import { createUser } from "../reducers/usersReducer";
 import { createSelector } from "@reduxjs/toolkit";
-
-export const useUserValue = () => {
-  return useContext(UserContext).user[0];
-};
-
-export const useUserDispatch = () => {
-  return useContext(UserContext).user[1];
-};
-
-export const useUserLoading = () => {
-  return useContext(UserContext).loading;
-};
+import { doRemoveUser, setUser } from "../reducers/userReducer";
 
 export const useNotificationValue = () => {
   return useSelector((state) => state.notification);
@@ -51,17 +35,46 @@ export const useShowNotification = () => {
   };
 };
 
-export const useUsersQuery = () => {
-  const usersQuery = useQuery({
-    queryKey: ["users"],
-    queryFn: usersService.getAll,
-    retry: false,
-  });
+export const useUser = () => {
+  return useSelector((state) => state.user);
+};
+
+export const useAuth = () => {
+  const showNotification = useShowNotification();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const signup = async (credentials) => {
+    try {
+      await dispatch(createUser(credentials));
+      login({
+        username: credentials.username,
+        password: credentials.password,
+      });
+    } catch (error) {
+      const message = error.response.data.error || error.message;
+      showNotification({ message, error: true });
+    }
+  };
+
+  const login = async (credentials) => {
+    try {
+      await dispatch(setUser(credentials));
+      navigate("/");
+    } catch (error) {
+      const message = error.response.data.error || error.message;
+      showNotification({ message, error: true });
+    }
+  };
+
+  const logout = () => {
+    dispatch(doRemoveUser());
+  };
 
   return {
-    users: usersQuery.data || [],
-    isLoading: usersQuery.isLoading,
-    isError: usersQuery.isError,
+    signup,
+    login,
+    logout,
   };
 };
 
@@ -70,12 +83,8 @@ export const useBlog = () => {
   const dispatch = useDispatch();
   const showNotification = useShowNotification();
   const toggleBlogFormRef = useRef();
-  const user = useUserValue();
+  const user = useUser();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    dispatch(setBlogs());
-  }, [dispatch]);
 
   const selectBlogs = (state) => state.blogs;
   const outputSelector = (blogs) => {
@@ -112,11 +121,11 @@ export const useBlog = () => {
     }
   };
 
-  let userHasLiked = false;
+  let userHasLiked = blog?.likes?.some(
+    ({ username }) => username === user.username,
+  );
+
   const likeBlog = async (blogToLike) => {
-    userHasLiked = blogToLike?.likes?.some(
-      ({ username }) => username === user.username,
-    );
     const message = `You have already liked this blog!`;
     if (userHasLiked) return showNotification({ message, error: true });
 
@@ -172,6 +181,10 @@ export const useBlog = () => {
     toggleBlogFormRef,
     userHasLiked,
   };
+};
+
+export const useUsers = () => {
+  return useSelector((state) => state.users);
 };
 
 export const useField = (name, type = "text") => {

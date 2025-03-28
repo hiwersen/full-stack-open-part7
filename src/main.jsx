@@ -1,14 +1,10 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
-import "./index.css";
 import { Provider } from "react-redux";
 import store from "./store";
-import { UserContextProvider } from "./UserContext";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
-
-const queryClient = new QueryClient();
+import "./index.css";
 
 const root = createRoot(document.getElementById("root"));
 root.render(
@@ -19,15 +15,11 @@ root.render(
         minHeight: "100vh",
       }}
     >
-      <QueryClientProvider client={queryClient}>
-        <UserContextProvider>
-          <Provider store={store}>
-            <Router>
-              <App />
-            </Router>
-          </Provider>
-        </UserContextProvider>
-      </QueryClientProvider>
+      <Provider store={store}>
+        <Router>
+          <App />
+        </Router>
+      </Provider>
     </div>
   </StrictMode>,
 );

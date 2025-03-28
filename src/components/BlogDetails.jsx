@@ -1,10 +1,10 @@
 import React from "react";
-import { useUserValue, useBlog } from "../hooks";
+import { useUser, useBlog } from "../hooks";
 import { color, size, flex } from "../styles";
 
 const BlogDetails = () => {
   const { blog, likeBlog, deleteBlog, userHasLiked } = useBlog();
-  const user = useUserValue();
+  const user = useUser();
 
   const style = {
     display: "flex",

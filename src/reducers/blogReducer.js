@@ -45,16 +45,15 @@ export const updateBlog = (blogToUpdate) => {
 
 export const likeBlog = (blogToLike) => {
   return async (dispatch) => {
-    await blogService.like(blogToLike);
-    dispatch(doUpdateBlog(blogToLike));
+    const blog = await blogService.like(blogToLike);
+    console.log(blog);
+    dispatch(doUpdateBlog(blog));
   };
 };
 
 export const commentBlog = (comment) => {
   return async (dispatch) => {
-    console.log(comment);
     const blog = await blogService.comment(comment);
-    console.log(blog);
     dispatch(doUpdateBlog(blog));
   };
 };

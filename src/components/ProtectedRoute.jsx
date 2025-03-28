@@ -1,14 +1,13 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { useUserLoading, useUserValue } from "../hooks";
+import { useUser } from "../hooks";
 import Nav from "./Nav";
 import Header from "./Header";
 import Footer from "./Footer";
 import { dynamicWidth, center, styleInitial } from "../styles";
 
-const ProtectedRoute = () => {
-  const user = useUserValue();
-  const loading = useUserLoading();
+const ProtectedRoute = ({ loading }) => {
+  const user = useUser();
 
   if (loading)
     return (

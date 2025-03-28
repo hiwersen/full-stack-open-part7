@@ -6,9 +6,9 @@ const getAll = async () => {
   return data;
 };
 
-const post = async (credentials) => {
+const create = async (credentials) => {
   const { data } = await axios.post(baseUrl, credentials);
   return data;
 };
 
-export default { getAll, post };
+export default { getAll, create };

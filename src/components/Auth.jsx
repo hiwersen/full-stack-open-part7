@@ -1,13 +1,13 @@
 import React from "react";
 import ToggleComponents from "./ToggleComponents";
 import AuthForm from "./AuthForm";
-import { useAuth, useUserValue } from "../hooks";
+import { useAuth, useUser } from "../hooks";
 import { Navigate } from "react-router-dom";
 import { dynamicWidth } from "../styles";
 
 const Auth = () => {
   const { signup, login } = useAuth();
-  const user = useUserValue();
+  const user = useUser();
 
   if (user) return <Navigate to="/" replace />;
 
